@@ -1,0 +1,22 @@
+---
+import HeroSlider from './HeroSlider.astro';
+
+const slides = [
+  {
+    type: "video",
+    src: "/media/hero-video.mp4",
+    title: "Entrena sin límites",
+    subtitle: "Gimnasio abierto 24 horas, 365 días"
+  },
+  {
+    type: "image",
+    src: "/media/hero-image.jpg",
+    title: "Tu mejor versión",
+    subtitle: "Fuerza, cardio y resultados reales"
+  }
+];
+---
+
+<header class="relative">
+  <HeroSlider slides={slides} />
+</header>

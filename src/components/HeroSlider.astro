@@ -1,0 +1,424 @@
+---
+interface Slide {
+  type: "video" | "image";
+  src: string;
+  title: string;
+  subtitle: string;
+}
+
+const { slides = [
+  {
+    type: "image",
+    src: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1920&h=1080&fit=crop",
+    title: "Transforma tu cuerpo",
+    subtitle: "Entrenamientos personalizados y equipamiento de última generación"
+  },
+  {
+    type: "image",
+    src: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=1920&h=1080&fit=crop",
+    title: "Alcanza tus metas",
+    subtitle: "Entrenadores profesionales te guiarán en cada paso"
+  },
+  {
+    type: "image",
+    src: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=1920&h=1080&fit=crop",
+    title: "Únete a la comunidad",
+    subtitle: "Más de 1000 miembros transformando sus vidas"
+  }
+] } = Astro.props as { slides?: Slide[] };
+
+const DURATION = 6000;
+---
+
+<section class="hero-slider-section relative h-[80vh] overflow-hidden">
+  {/* Header con Logo, Menú y Botón - FUERA del loop de slides */}
+  <div class="absolute top-0 left-0 right-0 z-30 px-8 md:px-12 py-8 md:py-12">
+    <div class="flex items-center justify-between max-w-[1920px] mx-auto">
+      {/* Logo - Izquierda */}
+      <div class="flex-shrink-0">
+        <img 
+          src="/public/media/hero-logo.avif" 
+          alt="Active 24 Logo" 
+          class="hero-logo-top"
+          width="587"
+          height="198"
+        />
+      </div>
+
+      {/* Menú Glass - Centro */}
+      <nav class="glass-menu hidden lg:flex">
+        <a href="#conocenos" class="menu-item">Conócenos</a>
+        <a href="#sucursales" class="menu-item">Sucursales</a>
+        <a href="#clases" class="menu-item">Clases</a>
+        <a href="#membresia" class="menu-item">Membresía</a>
+        <a href="#inscribirme" class="menu-item">Inscribirme</a>
+      </nav>
+
+      {/* Botón Día de Prueba - Derecha */}
+      <div class="flex-shrink-0">
+        <a
+          href="#daypass"
+          class="daypass-btn bg-transparent border-2 border-white text-white hover:bg-white hover:text-black transition-all duration-300 px-6 py-3 rounded-full font-semibold text-sm md:text-base whitespace-nowrap"
+        >
+          Día de Prueba
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slides -->
+  {slides.map((slide, index) => (
+    <div
+      class={`slide-item absolute inset-0 transition-opacity duration-1000 ${
+        index === 0 ? "opacity-100" : "opacity-0"
+      }`}
+      data-slide-index={index}
+    >
+      {slide.type === "video" ? (
+        <video
+          class="absolute inset-0 w-full h-full object-cover"
+          src={slide.src}
+          autoplay
+          muted
+          loop
+          playsinline
+        />
+      ) : (
+        <img
+          src={slide.src}
+          alt={slide.title}
+          class="absolute inset-0 w-full h-full object-cover"
+        />
+      )}
+
+      <!-- Overlay -->
+      <div class="absolute inset-0 bg-black/60"></div>
+
+      {/* Contenido principal - Izquierda centro */}
+      <div class="relative z-10 h-full flex items-center px-8 md:px-12 lg:px-16 max-w-[1920px] mx-auto w-full">
+        <div class="absolute bottom-[120px] left-0 px-[64px] py-0 max-w-full">
+          <h1 class="text-4xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight mb-4">
+            {slide.title}
+          </h1>
+          <p class="text-lg md:text-xl text-gray-200 mb-8">
+            {slide.subtitle}
+          </p>
+
+          <a
+            href="#planes"
+            class="inline-block bg-yellow-600 hover:bg-yellow-700 transition-all duration-300 px-8 py-3 rounded-full font-semibold text-base md:text-lg"
+          >
+            Ver planes
+          </a>
+        </div>
+      </div>
+    </div>
+  ))}
+
+  <!-- Dots -->
+  <div class="absolute bottom-6 w-full z-20">
+    <div class="flex justify-between mx-auto px-16 gap-6">
+      {slides.map((slide, index) => (
+        <button
+          class="slider-dot-wrapper flex-1 cursor-pointer group"
+          data-dot-index={index}
+          aria-label={`Ir al slide ${index + 1}`}
+        >
+          {/* Barra del dot */}
+          <div class={`slider-dot-btn relative h-px rounded-full overflow-hidden transition-all ${index === 0 ? 'bg-white' : 'bg-white/30'}`} data-dot-bar={index}>
+            <span
+              class="slider-dot-fill absolute left-0 top-0 h-full w-0 bg-yellow-600"
+              data-fill-index={index}
+            ></span>
+          </div>
+          
+          {/* Título del slide */}
+          <div 
+            class={`slider-dot-title text-left mt-3 text-sm transition-opacity ${index === 0 ? 'text-white opacity-100' : 'text-white/30 opacity-30'}`}
+            data-dot-title={index}
+          >
+            {slide.title}
+          </div>
+        </button>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .slider-dot-fill {
+    transition: none;
+  }
+
+  .slider-dot-fill.fill-animating {
+    width: 100% !important;
+    transition: width 6s linear !important;
+  }
+
+  .slider-dot-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .slider-dot-btn {
+    transition: background-color 0.3s, transform 0.2s;
+  }
+
+  .slider-dot-title {
+    font-size: 14px;
+    padding-top: 12px;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
+    max-height: 76px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: opacity 0.3s, color 0.3s;
+  }
+
+ /* Logo arriba izquierda */
+  .hero-logo-top {
+    max-width: 120px;
+    height: auto;
+  }
+
+  @media (min-width: 768px) {
+    .hero-logo-top {
+      max-width: 180px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .hero-logo-top {
+      max-width: 220px;
+    }
+  }
+
+  /* Menú Glass */
+  .glass-menu {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    background-color: rgba(0, 15, 30, 0.4);
+    border-radius: 20px;
+    height: 42px;
+    padding: 0;
+    position: relative;
+  }
+
+  .menu-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 14px;
+    text-decoration: none;
+    color: white;
+    cursor: pointer;
+    padding: 0 20px;
+    height: 100%;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    white-space: nowrap;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .menu-item:first-child {
+    border-top-left-radius: 16px;
+    border-bottom-left-radius: 16px;
+  }
+
+  .menu-item:last-child {
+    border-right: none;
+    border-top-right-radius: 16px;
+    border-bottom-right-radius: 16px;
+  }
+
+  .menu-item::after {
+    background-color: #FDC518;
+    bottom: 0;
+    content: "";
+    display: block;
+    height: 2px;
+    left: 0;
+    margin: 0 auto;
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    transition: opacity 0.2s ease;
+    width: 100%;
+    z-index: 1;
+  }
+
+ .menu-item:hover::after {
+    opacity: 1 !important;;
+  }
+
+  .menu-item:hover {
+    background-color: rgb(162 161 161 / 15%);
+    color: #fff;
+  }
+
+  .menu-item:active {
+    background-color: rgba(255, 255, 255, 0.15);
+  }
+
+  /* Botón Día de Prueba */
+  .daypass-btn {
+    white-space: nowrap;
+  }
+
+  .daypass-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+  }
+
+  /* Responsive - Ocultar menú en pantallas pequeñas */
+  @media (max-width: 1023px) {
+    .glass-menu {
+      display: none;
+    }
+  }
+</style>
+
+<script is:inline>
+  (function() {
+    // Flag para evitar múltiples inicializaciones
+    if (window.__heroSliderInitialized) {
+      console.log('⚠️ HeroSlider ya inicializado, saltando...');
+      return;
+    }
+    window.__heroSliderInitialized = true;
+
+    // Esta función se ejecuta cuando el DOM está listo
+    function initHeroSlider() {
+      console.log('🚀 Inicializando HeroSlider');
+      
+      const container = document.querySelector('.hero-slider-section');
+      if (!container) {
+        console.error('❌ No se encontró el contenedor del slider');
+        return;
+      }
+
+      const slides = container.querySelectorAll('[data-slide-index]');
+      const dots = container.querySelectorAll('[data-dot-index]');
+      const fills = container.querySelectorAll('[data-fill-index]');
+      
+      console.log('📊 Elementos encontrados:', { slides: slides.length, dots: dots.length, fills: fills.length });
+
+      const DURATION = 6000;
+      let currentIndex = 0;
+      let autoSlideInterval;
+
+      function animateFill(index) {
+        console.log('🎨 Animando fill:', index);
+        
+        // Resetear todos los fills
+        fills.forEach((fill) => {
+          fill.classList.remove('fill-animating');
+          fill.style.width = '0%';
+        });
+
+        // Actualizar estilos de dots y títulos
+        const allDotBars = container.querySelectorAll('[data-dot-bar]');
+        const allDotTitles = container.querySelectorAll('[data-dot-title]');
+        
+        allDotBars.forEach((bar, i) => {
+          if (i === index) {
+            // Dot activo: fondo blanco completo
+            bar.classList.remove('bg-white/30');
+            bar.classList.add('bg-white');
+          } else {
+            // Dot inactivo: fondo blanco semi-transparente
+            bar.classList.remove('bg-white');
+            bar.classList.add('bg-white/30');
+          }
+        });
+
+        allDotTitles.forEach((title, i) => {
+          if (i === index) {
+            // Título activo: blanco completo
+            title.classList.remove('text-white/30', 'opacity-30');
+            title.classList.add('text-white', 'opacity-100');
+          } else {
+            // Título inactivo: blanco semi-transparente
+            title.classList.remove('text-white', 'opacity-100');
+            title.classList.add('text-white/30', 'opacity-30');
+          }
+        });
+
+        // Pequeño delay para asegurar que el navegador procese el reset
+        setTimeout(() => {
+          fills[index].classList.add('fill-animating');
+          console.log('✅ Clase aplicada al fill', index);
+        }, 50);
+      }
+
+      function showSlide(index) {
+        console.log('📸 Cambiando a slide:', index);
+        
+        // Ocultar todos
+        slides.forEach((slide) => {
+          slide.classList.remove('opacity-100');
+          slide.classList.add('opacity-0');
+        });
+
+        // Mostrar actual
+        slides[index].classList.remove('opacity-0');
+        slides[index].classList.add('opacity-100');
+
+        currentIndex = index;
+        animateFill(index);
+      }
+
+      function startAutoSlide() {
+        if (autoSlideInterval) {
+          clearInterval(autoSlideInterval);
+        }
+
+        autoSlideInterval = setInterval(() => {
+          const nextIndex = (currentIndex + 1) % slides.length;
+          showSlide(nextIndex);
+        }, DURATION);
+        
+        console.log('⏰ Auto-slide activado');
+      }
+
+      // Click en dots
+      dots.forEach((dot) => {
+        dot.addEventListener('click', () => {
+          const index = parseInt(dot.getAttribute('data-dot-index') || '0');
+          console.log('👆 Click en dot:', index);
+          if (autoSlideInterval) {
+            clearInterval(autoSlideInterval);
+          }
+          showSlide(index);
+          startAutoSlide();
+        });
+      });
+
+      // Inicializar
+      console.log('🎬 Iniciando slider en slide 0');
+      animateFill(0);
+      startAutoSlide();
+
+      // Cleanup
+      document.addEventListener('astro:before-preparation', () => {
+        if (autoSlideInterval) {
+          clearInterval(autoSlideInterval);
+        }
+      });
+    }
+
+    // Ejecutar cuando el DOM esté listo
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initHeroSlider);
+    } else {
+      initHeroSlider();
+    }
+  })();
+</script>
