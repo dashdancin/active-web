@@ -106,7 +106,7 @@ const DURATION = 6000;
 
           <a
             href="#planes"
-            class="inline-block bg-yellow-600 hover:bg-yellow-700 transition-all duration-300 px-8 py-3 rounded-full font-semibold text-base md:text-lg"
+            class="inline-block bg-yellow-active hover:bg-yellow-dark-active transition-all duration-300 px-8 py-3 rounded-full font-semibold text-base md:text-lg"
           >
             Ver planes
           </a>
@@ -127,7 +127,7 @@ const DURATION = 6000;
           {/* Barra del dot */}
           <div class={`slider-dot-btn relative h-px rounded-full overflow-hidden transition-all ${index === 0 ? 'bg-white' : 'bg-white/30'}`} data-dot-bar={index}>
             <span
-              class="slider-dot-fill absolute left-0 top-0 h-full w-0 bg-yellow-600"
+              class="slider-dot-fill absolute left-0 top-0 h-full w-0 bg-yellow-active"
               data-fill-index={index}
             ></span>
           </div>
@@ -239,7 +239,7 @@ const DURATION = 6000;
   }
 
   .menu-item::after {
-    background-color: #FDC518;
+    background-color: #f6b500;
     bottom: 0;
     content: "";
     display: block;

@@ -51,6 +51,18 @@
   .hero-dot[aria-current="true"] {
     background: rgba(255, 255, 255, 0.4);
   }
+
+  .bg-yellow-active {
+    background-color: #f6b500;
+  }
+
+  .hover\:bg-yellow-dark-active {
+    &:hover {
+      @media (hover: hover) {
+        background-color: #d3a000;
+      }
+    }
+  }
 }
 
 @layer utilities {
