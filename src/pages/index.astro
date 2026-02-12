@@ -3,6 +3,31 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Header from "../components/Header.astro";
 import ExperienceSection from "../components/ExperienceSection.astro";
 
+import SocialSection from "../components/Social.astro";
+
+// Personalizar redes sociales (opcional)
+const customSocialLinks = [
+  {
+    name: "Facebook",
+    url: "https://www.facebook.com/active24gym",
+    icon: "fab fa-facebook-f"
+  },
+  {
+    name: "Instagram",
+    url: "https://www.instagram.com/active24gym",
+    icon: "fab fa-instagram"
+  },
+  {
+    name: "TikTok",
+    url: "https://www.tiktok.com/@active24gym",
+    icon: "fab fa-tiktok"
+  },
+  {
+    name: "LinkedIn",
+    url: "https://www.linkedin.com/company/active24",
+    icon: "fab fa-linkedin-in"
+  }
+];
 ---
 
 <BaseLayout title="Active 24 | Gimnasio 24 horas">
@@ -12,4 +37,12 @@ import ExperienceSection from "../components/ExperienceSection.astro";
   <!-- <section id="planes">...</section> -->
   <!-- <section id="servicios">...</section> -->
      <ExperienceSection />  
+  <!-- Opción 2: Personalizado -->
+
+  <SocialSection 
+    title="Síguenos"
+    backgroundColor="bg-black"
+    socialLinks={customSocialLinks}
+  />
+ 
 </BaseLayout>

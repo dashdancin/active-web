@@ -1,0 +1,128 @@
+---
+interface SocialLink {
+  name: string;
+  url: string;
+  icon: string; // Nombre del ícono de Font Awesome
+}
+
+const { 
+  title = "Síguenos",
+  backgroundColor = "bg-black",
+  socialLinks = [
+    {
+      name: "Facebook",
+      url: "https://www.facebook.com/active",
+      icon: "fab fa-facebook-f"
+    },
+    {
+      name: "Instagram",
+      url: "https://www.instagram.com/active",
+      icon: "fab fa-instagram"
+    },
+    {
+      name: "TikTok",
+      url: "https://www.tiktok.com/@active",
+      icon: "fab fa-tiktok"
+    },
+    {
+      name: "LinkedIn",
+      url: "https://www.linkedin.com/company/active",
+      icon: "fab fa-linkedin-in"
+    }
+  ]
+} = Astro.props;
+---
+
+<section class={`social-section py-16 md:py-24 ${backgroundColor}`}>
+  <div class="max-w-7xl mx-auto px-8 md:px-12">
+    
+    <!-- Título -->
+    <div class="text-center mb-12">
+      <h2 class="text-5xl md:text-6xl lg:text-7xl font-black text-white uppercase tracking-tight">
+        {title}
+      </h2>
+    </div>
+
+    <!-- Lista de redes sociales -->
+    <ul class="flex items-center justify-center gap-6 md:gap-8">
+      {socialLinks.map((social) => (
+        <li>
+          <a
+            href={social.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="social-link group"
+            aria-label={social.name}
+          >
+            <div class="social-circle">
+              <i class={`${social.icon} text-2xl md:text-3xl`}></i>
+            </div>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+  </div>
+</section>
+
+<style>
+  .social-circle {
+    width: 80px;
+    height: 80px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .social-circle::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: #FDC518;
+    border-radius: 50%;
+    transform: scale(0);
+    transition: transform 0.3s ease;
+    z-index: -1;
+  }
+
+  .social-link:hover .social-circle {
+    border-color: #FDC518;
+    transform: scale(1.1);
+    border: none;
+  }
+
+  .social-link:hover .social-circle::before {
+    transform: scale(1);
+  }
+
+  .social-link:hover .social-circle i {
+    color: black;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .social-circle {
+      width: 60px;
+      height: 60px;
+    }
+    
+    .social-circle i {
+      font-size: 1.25rem;
+    }
+  }
+</style>
+
+<!-- Font Awesome CDN (si no lo tienes ya) -->
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+/>
