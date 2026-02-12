@@ -77,13 +77,13 @@ const {
           <img
             src={item.image}
             alt={item.imageAlt}
-            class={`experience-image absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-in-out ${
+            class={`experience-image absolute inset-0 w-full h-full object-cover ${
               index === 0 ? 'opacity-100' : 'opacity-0'
             }`}
             data-experience-image={index}
           />
         ))}
-        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-black/10 to-black/90"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-black/10 to-black/90 pointer-events-none"></div>
       </div>
 
       <div class="absolute inset-0 z-10 flex flex-col">
@@ -105,7 +105,7 @@ const {
                   </h3>
                 </div>
                 <div class="h-full flex items-center px-8 relative overflow-hidden">
-                  <p class="experience-description h-fit text-base text-whiteleading-relaxedopacity-0 transition-all duration-500">
+                  <p class="experience-description h-fit text-base text-white leading-relaxed opacity-0 transition-all duration-500">
                     {item.description}
                   </p>
                 </div>
@@ -136,7 +136,7 @@ const {
 <style>
   /* === ESTADO ACTIVO === */
   .experience-item-overlay[data-active="true"] {
-    background-color: #ffcc0092/* Amarillo */
+    background-color: #ffcc0092; /* Amarillo */
   }
 
   /* Texto Blanco en Activo */
@@ -164,7 +164,7 @@ const {
 
   /* === ESTADO TRAIL (Estela de luz) === */
   .experience-item-overlay.lighting-up {
-    background-color: #ffcc0092  !important;
+    background-color: #ffcc0092 !important;
     transition: background-color 0.2s ease;
   }
   
@@ -174,7 +174,6 @@ const {
   }
 </style>
 
-
 <script>
   function initExperienceSwitcher() {
     const items = document.querySelectorAll('[data-experience-item]');
@@ -183,50 +182,15 @@ const {
     if (!items.length) return;
 
     let currentActiveIndex = 0;
-    let transitionLock = false; 
+    let transitionLock = false;
+    let hoverTimeout: number | null = null; // Para el debounce
 
     const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-    async function handleHover(targetIndex: number) {
-      if (targetIndex === currentActiveIndex || transitionLock) return;
-      
-      const prevIndex = currentActiveIndex;
-      currentActiveIndex = targetIndex; 
-      
-      const start = Math.min(prevIndex, targetIndex);
-      const end = Math.max(prevIndex, targetIndex);
-      
-      // 1. ILUMINAR CAMINO COMPLETO (Incluyendo el origen y el destino)
-      for (let i = start; i <= end; i++) {
-        items[i].classList.add('lighting-up');
-      }
+    // --- NUEVA LÓGICA SEPARADA ---
 
-      // 2. CAMBIAR ESTADO ACTIVO (Para que el destino ya se vea seleccionado)
-      updateActiveState(targetIndex);
-
-      // 3. TIEMPO DE ESPERA (Estela visible)
-      await delay(500);
-
-      // 4. APAGAR CAMINO SECUENCIALMENTE (Desde el origen hacia el destino)
-      if (prevIndex < targetIndex) {
-        // Bajando (ej. de 1 a 4): Apagamos 1, luego 2, luego 3. El 4 se queda.
-        for (let i = prevIndex; i < targetIndex; i++) {
-          items[i].classList.remove('lighting-up');
-          await delay(10); 
-        }
-      } else {
-        // Subiendo (ej. de 4 a 1): Apagamos 4, luego 3, luego 2. El 1 se queda.
-        for (let i = prevIndex; i > targetIndex; i--) {
-          items[i].classList.remove('lighting-up');
-          await delay(10);
-        }
-      }
-      
-      // Limpieza final para asegurar que el activo no tenga la clase de trail
-      items[targetIndex].classList.remove('lighting-up');
-    }
-
-    function updateActiveState(index: number) {
+    // 1. Actualiza solo la interfaz (texto, colores de bloque)
+    function updateUiState(index: number) {
       items.forEach((item, i) => {
         if (i === index) {
           item.setAttribute('data-active', 'true');
@@ -234,7 +198,10 @@ const {
           item.setAttribute('data-active', 'false');
         }
       });
+    }
 
+    // 2. Actualiza solo las imágenes de fondo
+    function updateImageState(index: number) {
       images.forEach((image, i) => {
         if (i === index) {
           image.classList.remove('opacity-0');
@@ -246,13 +213,80 @@ const {
       });
     }
 
+    // Función principal del hover
+    async function handleHover(targetIndex: number) {
+      if (targetIndex === currentActiveIndex || transitionLock) return;
+      
+      transitionLock = true;
+      const prevIndex = currentActiveIndex;
+      currentActiveIndex = targetIndex; 
+      
+      const start = Math.min(prevIndex, targetIndex);
+      const end = Math.max(prevIndex, targetIndex);
+      
+      // A. CAMBIAR IMAGEN INMEDIATAMENTE (¡PRIMERO!)
+      updateImageState(targetIndex);
+
+      // B. ILUMINAR CAMINO (Estela instantánea)
+      for (let i = start; i <= end; i++) {
+        items[i].classList.add('lighting-up');
+      }
+
+      // C. ACTIVAR UI INMEDIATAMENTE (Texto blanco, descripción visible)
+      updateUiState(targetIndex);
+
+      // D. ESPERAR (Mantener iluminado el camino)
+      await delay(400); // Reducido de 400ms a 300ms
+
+      // E. APAGAR CAMINO (Cascada)
+      if (prevIndex < targetIndex) {
+        // Bajando
+        for (let i = prevIndex; i < targetIndex; i++) {
+          items[i].classList.remove('lighting-up');
+          await delay(20); // Reducido de 150ms a 100ms
+        }
+      } else {
+        // Subiendo
+        for (let i = prevIndex; i > targetIndex; i--) {
+          items[i].classList.remove('lighting-up');
+          await delay(20); // Reducido de 150ms a 100ms
+        }
+      }
+      
+      // Asegurar que el activo final no tenga clase lighting-up
+      items[targetIndex].classList.remove('lighting-up');
+      
+      transitionLock = false;
+    }
+
+
     items.forEach((item, index) => {
+      // Limpiar timeout anterior al entrar
       item.addEventListener('mouseenter', () => {
-        handleHover(index);
+        // Cancelar cualquier hover pendiente
+        if (hoverTimeout !== null) {
+          clearTimeout(hoverTimeout);
+        }
+        
+        // Esperar 200ms antes de activar el efecto
+        hoverTimeout = window.setTimeout(() => {
+          handleHover(index);
+          hoverTimeout = null;
+        }, 300);
+      });
+
+      // Cancelar el hover si el mouse sale antes del delay
+      item.addEventListener('mouseleave', () => {
+        if (hoverTimeout !== null) {
+          clearTimeout(hoverTimeout);
+          hoverTimeout = null;
+        }
       });
     });
 
-    updateActiveState(0);
+    // Inicialización: activar UI e Imagen del primer elemento
+    updateUiState(0);
+    updateImageState(0);
   }
 
   if (document.readyState === 'loading') {
