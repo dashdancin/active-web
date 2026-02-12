@@ -144,7 +144,7 @@ const {
 <style>
   /* === ESTADO ACTIVO === */
   .experience-item-overlay[data-active="true"] {
-    background-color: #ffcc0092; /* Amarillo */
+    background-color: #ffcc00ba; /* Amarillo */
   }
 
   /* Texto Blanco en Activo */
@@ -172,7 +172,7 @@ const {
 
   /* === ESTADO TRAIL (Estela de luz) === */
   .experience-item-overlay.lighting-up {
-    background-color: #ffcc0092 !important;
+    background-color: #ffcc00ba !important;
     transition: background-color 0.2s ease;
   }
   
@@ -244,7 +244,7 @@ const {
       updateUiState(targetIndex);
 
       // D. ESPERAR (Mantener iluminado el camino)
-      await delay(400); // Reducido de 400ms a 300ms
+      await delay(300); 
 
       // E. APAGAR CAMINO (Cascada)
       if (prevIndex < targetIndex) {
