@@ -71,6 +71,16 @@
       }
     }
   }
+
+  .bg-black-active {
+    background-color: #212121;
+  }
+
+  .footer-daypass {
+    font-family: 'BullText-Bold', monospace, sans-serif; 
+    font-weight: 600;
+    font-size: large;
+  }
 }
 
 @layer utilities {

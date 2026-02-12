@@ -2,7 +2,6 @@
 interface Branch {
   name: string;
   address: string;
-  phone: string;
 }
 
 interface NavLink {
@@ -13,22 +12,22 @@ interface NavLink {
 const { 
   logoSrc = "/public/media/footer-logo-active.png",
   logoAlt = "Active 24",
-  schedule = "Abierto 24 horas, 365 días al año",
+  schedule = `Lunes: 5 a.m. – 12 a.m.
+  Martes a viernes: 24 horas
+  Sábado: 8 a.m. – 6 p.m.
+  Domingo: 8 a.m. – 2 p.m.`,
   branches = [
     {
       name: "Sucursal Del Valle",
-      address: "La Morena 811, Narvarte Poniente, Benito Juárez, 03020 Ciudad de México, CDMX",
-      phone: "56 1319 6494"
+      address: "La Morena 811, Narvarte Poniente, Benito Juárez, 03020 Ciudad de México, CDMX"
     },
     {
       name: "Sucursal Narvarte",
-      address: "Gabriel Mancera 1357, Col del Valle Centro, Benito Juárez, 03100 Ciudad de México, CDMX",
-      phone: "55 1306 2821"
+      address: "Gabriel Mancera 1357, Col del Valle Centro, Benito Juárez, 03100 Ciudad de México, CDMX"
     },
     {
       name: "Sucursal Insurgentes",
-      address: "Av. Insurgentes Sur 3655, Miguel Hidalgo 1ra Secc, Tlalpan, 14260 Ciudad de México, CDMX",
-      phone: "55 5158 7352"
+      address: "Av. Insurgentes Sur 3655, Miguel Hidalgo 1ra Secc, Tlalpan, 14260 Ciudad de México, CDMX"
     }
   ],
   navLinks = [
@@ -36,19 +35,18 @@ const {
     { label: "Bolsa de empleo", href: "#empleo" },
     { label: "Código de conducta", href: "#codigo" },
     { label: "Calendario de clases", href: "#privacidad" },
-    { label: "Descarga la aplicación", href: "#daypass" },
-    { label: "Membresía", href: "#membresia" }
+    { label: "Descarga la aplicación", href: "#daypass" }
   ]
 } = Astro.props;
 
 const currentYear = new Date().getFullYear();
 ---
 
-<footer class="footer bg-black text-white pt-16 pb-8">
+<footer class="footer bg-black-active text-white pt-16 pb-8">
   <div class="max-w-7xl mx-auto px-8 md:px-12">
     
-    <!-- Grid principal de 3 columnas -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-8 mb-12">
+    <!-- Grid principal de 3 columnas con proporciones personalizadas -->
+    <div class="footer-grid mb-12">
       
       <!-- COLUMNA 1: Logo y Horarios -->
       <div class="footer-column">
@@ -62,14 +60,17 @@ const currentYear = new Date().getFullYear();
             <i class="fas fa-clock mr-2"></i>
             Horarios
           </p>
-          <p class="text-gray-300 text-base leading-relaxed">
+          <p class="text-gray-300 text-base leading-relaxed" style={{ whiteSpace: 'pre-line' }}>
             {schedule}
           </p>
         </div>
 
         <!-- Redes sociales en footer -->
         <div class="mt-8">
-          <p class="text-gray-400 text-sm mb-3 uppercase tracking-wide">Síguenos</p>
+          <p class="text-gray-400 text-sm mb-3 tracking-wide flex items-center">
+            <i class="fas fa-share-nodes mr-2"></i>
+            Síguenos
+          </p>
           <div class="flex gap-4">
             <a href="https://www.facebook.com/active" target="_blank" rel="noopener noreferrer" class="social-icon-footer">
               <i class="fab fa-facebook-f"></i>
@@ -90,22 +91,17 @@ const currentYear = new Date().getFullYear();
       <!-- COLUMNA 2: Sucursales -->
       <div class="footer-column">
         <div>
-          <h3 class="text-yellow-active font-bold text-lg mb-4 uppercase tracking-wide">
+          <h3 class="text-yellow-active font-bold text-lg mb-4 tracking-wide">
             <i class="fas fa-map-marker-alt mr-2"></i>
             Sucursales
           </h3>
-          <div class="space-y-6">
+          <div class="space-y-8">
             {branches.map((branch) => (
               <div class="border-l-2 border-yellow-active pl-4">
                 <h4 class="font-semibold text-white mb-2">{branch.name}</h4>
                 <p class="text-gray-400 text-sm mb-1 leading-relaxed">
-                  <i class="fas fa-location-dot mr-1 text-yellow-active"></i>
                   {branch.address}
                 </p>
-                <a href={`tel:${branch.phone.replace(/\s/g, '')}`} class="text-gray-400 text-sm hover:text-yellow-active transition-colors">
-                  <i class="fas fa-phone mr-1 text-yellow-active"></i>
-                  {branch.phone}
-                </a>
               </div>
             ))}
           </div>
@@ -114,7 +110,7 @@ const currentYear = new Date().getFullYear();
 
       <!-- COLUMNA 3: Navegación -->
       <div class="footer-column">
-        <h3 class="text-yellow-active font-bold text-lg mb-4 uppercase tracking-wide">
+        <h3 class="text-yellow-active font-bold text-lg mb-4 tracking-wide">
           <i class="fas fa-compass mr-2"></i>
           Navegación
         </h3>
@@ -135,13 +131,17 @@ const currentYear = new Date().getFullYear();
         </nav>
 
         <!-- CTA en footer -->
-        <div class="mt-8 p-4 bg-yellow-active rounded-lg">
-          <p class="text-black font-bold mb-2">¿Listo para empezar?</p>
+        <div class="mt-8 rounded-lg">
+          <p class="footer-daypass text-yellow-active font-bold mb-2 flex items-center">
+            <i class="fas fa-rocket mr-2"></i>
+            ¿Listo para empezar?
+          </p>
           <a 
             href="#daypass"
-            class="inline-block bg-black text-white px-6 py-2 rounded-full font-semibold text-sm hover:bg-gray-900 transition-colors"
+            class="nav-link text-gray-300 hover:text-yellow-active transition-colors duration-200 text-base flex items-center group"
           >
-            Obtén tu día de prueba
+            <i class="fas fa-chevron-right mr-2 text-yellow-active text-xs opacity-0 group-hover:opacity-100 transition-opacity"></i>
+            Obtén un día de prueba
           </a>
         </div>
       </div>
@@ -149,12 +149,12 @@ const currentYear = new Date().getFullYear();
     </div>
 
     <!-- Línea divisoria -->
-    <div class="border-t border-gray-800 pt-8">
-      <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-        <p class="text-gray-500 text-sm text-center md:text-left">
+    <div class="border-t border-gray-800 pt-4">
+      <div class="flex flex-col md:flex-row justify-between items-center gap-2">
+        <p class="text-gray-500 text-xs text-center md:text-left">
           © {currentYear} Dashdance. Todos los derechos reservados.
         </p>
-        <div class="flex gap-6 text-sm">
+        <div class="flex gap-6 text-xs">
           <a href="#privacidad" class="text-gray-500 hover:text-yellow-active transition-colors">
             Aviso de Privacidad
           </a>
@@ -169,6 +169,33 @@ const currentYear = new Date().getFullYear();
 </footer>
 
 <style>
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  @media (min-width: 1024px) {
+    .footer-grid {
+      grid-template-columns: 2fr 2.5fr 2fr;
+      gap: 0;
+      column-gap: 0;
+    }
+
+    .footer-grid > :nth-child(1) {
+      padding-right: 2rem;
+    }
+
+    .footer-grid > :nth-child(2) {
+      padding-left: 2rem;
+      padding-right: 4rem;
+    }
+
+    .footer-grid > :nth-child(3) {
+      padding-left: 4rem;
+    }
+  }
+
   .footer-column {
     display: flex;
     flex-direction: column;
