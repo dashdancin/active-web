@@ -13,3 +13,39 @@ const { title = 'Active 24' } = Astro.props;
     <slot />
   </body>
 </html>
+
+<style is:global>
+  /* Declaración de la fuente */
+  @font-face {
+    font-family: 'BullText-Regular';
+    /* Nota: La ruta empieza con '/' porque está en public */
+    src: url('/public/fonts/BullText-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap; /* Importante para rendimiento */
+  }
+
+  /* --- FUENTE 1: TÍTULOS (Strong) --- */
+@font-face {
+  font-family: 'BullText-Bold'; /* Nombre compartido */
+  src: url('/public/fonts/BullText-Bold.woff2') format('woff2');
+  font-weight: 700; /* Bold */
+  font-style: normal;
+  font-display: swap;
+}
+
+/* --- FUENTE 2: TEXTO Medium (Inter) --- */
+@font-face {
+  font-family: 'BullText-Medium'; /* Nombre compartido */
+  src: url('/public/fonts/BullText-Medium.woff2') format('woff2');
+  font-weight: 400; /* Normal */
+  font-style: normal;
+  font-display: swap;
+}
+
+
+  /* Uso por defecto */
+body {
+  font-family: 'BullText-Regular', monospace, sans-serif;
+}
+</style>

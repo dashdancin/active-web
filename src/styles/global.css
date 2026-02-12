@@ -88,3 +88,24 @@
     height: 8px;
   }
 }
+
+h1, h2 {
+  font-family: 'BullText-Bold', monospace, sans-serif; 
+}
+
+h3 {
+  font-family: 'BullText-Medium', monospace, sans-serif; 
+  font-weight: 500;
+}
+
+.subtitle {
+  font-family: 'BullText-Regular', monospace, sans-serif; 
+  font-size: 18px;
+  font-weight: 300;
+}
+
+.main-btn {
+  font-family: 'BullText-Bold', monospace, sans-serif; 
+  font-size: 16px;
+  font-weight: 700;
+}
