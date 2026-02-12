@@ -1,0 +1,264 @@
+---
+interface ExperienceItem {
+  id: number;
+  title: string;
+  description: string;
+  image: string;
+  imageAlt: string;
+}
+
+const { 
+  preTitle = "Active24 #1",
+  mainTitle = "Nuestro Gimnasio es Tu Gimnasio",
+  subtitle = "¡Levanta los pies! Con un gimnasio diseñado a tu alrededor, creemos que te encantará estar aquí.",
+  items = [
+    {
+      id: 1,
+      title: "Clases de fitness en grupo",
+      description: "Diseñamos nuestros clubes para brindarte los entrenamientos más increíbles posibles. Es por eso que nuestros dedicados estudios de fitness grupales son cuatro paredes de diversión innovadora y divertida.",
+      image: "/public/media/crunchism--miles.jpg",
+      imageAlt: "Clases de fitness en grupo"
+    },
+    {
+      id: 2,
+      title: "Equipamiento de última generación",
+      description: "Aumenta el volumen, reduce el tamaño o simplemente disfruta de tu lista de reproducción favorita. Nuestras pesas libres, máquinas brillantes y equipos de última generación son el equipo para llevarlo allí.",
+      image: "/public/media/crunchism--people-who.jpg",
+      imageAlt: "Equipamiento de gimnasio"
+    },
+    {
+      id: 3,
+      title: "Zona de cardio completa",
+      description: "Contamos con todo el equipo que necesitas para correr, trotar o caminar hacia tus objetivos de acondicionamiento físico. ¡Te estamos animando!",
+      image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1200&h=800&fit=crop",
+      imageAlt: "Zona de cardio"
+    },
+    {
+      id: 4,
+      title: "Personal que te apoya",
+      description: "Somos más que instalaciones increíbles. Somos instructores, capacitadores y personal que vivimos para tus choques de manos posteriores al entrenamiento.",
+      image: "/public/media/crunchism--sparkling-clean.jpg",
+      imageAlt: "Entrenadores personales"
+    },
+    {
+      id: 5,
+      title: "Instalaciones impecables",
+      description: "Nuestros gimnasios no sólo están repletos de equipos increíbles, sino que además están impecablemente limpios.",
+      image: "/public/media/crunchism-group-fitness.jpg",
+      imageAlt: "Gimnasio limpio"
+    }
+  ]
+} = Astro.props;
+---
+
+<section class="experience-section bg-white py-10 md:py-16">
+  <div class="max-w-[90rem] mx-auto px-4 md:px-12">
+    
+    <header class="text-center mb-12">
+      <div class="flex items-center justify-center gap-4 mb-4">
+        <hr class="w-12 border-t-2 border-gray-800">
+        <h3 class="text-sm font-semibold tracking-wider uppercase text-gray-800">
+          {preTitle}
+        </h3>
+        <hr class="w-12 border-t-2 border-gray-800">
+      </div>
+      <h2 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 mb-6">
+        {mainTitle}
+      </h2>
+      <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
+        {subtitle}
+      </p>
+    </header>
+
+    <div class="hidden lg:block relative w-full min-h-[750px] rounded-xl overflow-hidden shadow-2xl">
+      
+      <div class="absolute inset-0 z-0">
+        {items.map((item, index) => (
+          <img
+            src={item.image}
+            alt={item.imageAlt}
+            class={`experience-image absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-in-out ${
+              index === 0 ? 'opacity-100' : 'opacity-0'
+            }`}
+            data-experience-image={index}
+          />
+        ))}
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-black/10 to-black/90"></div>
+      </div>
+
+      <div class="absolute inset-0 z-10 flex flex-col">
+        
+        <div class="h-1/2 w-full pointer-events-none"></div>
+
+        <div class="h-1/2 w-full flex flex-col border-t border-white/10">
+          {items.map((item, index) => (
+            <div 
+              class="experience-item-overlay flex-1 border-b border-white/10 cursor-pointer transition-colors duration-300 group"
+              data-experience-item={index}
+              data-active={index === 0 ? "true" : "false"}
+            >
+              <div class="h-full grid grid-cols-[30%_70%] items-center">
+                
+                <div class="h-full flex items-center px-8 border-white/10 bg-white/0 transition-colors">
+                  <h3 class="item-title text-lg font-bold text-gray-300 uppercase tracking-wide transition-colors duration-300">
+                    {item.title}
+                  </h3>
+                </div>
+                <div class="h-full flex items-center px-8 relative overflow-hidden">
+                  <p class="experience-description h-fit text-base text-whiteleading-relaxedopacity-0 transition-all duration-500">
+                    {item.description}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <div class="lg:hidden">
+      <div class="space-y-8">
+        {items.map((item) => (
+          <div class="bg-white rounded-xl overflow-hidden shadow-lg">
+            <img src={item.image} alt={item.imageAlt} class="w-full aspect-video object-cover" />
+            <div class="p-6 bg-yellow-600">
+              <h3 class="text-xl font-bold text-white mb-2">{item.title}</h3>
+              <p class="text-white/90 text-sm">{item.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  /* === ESTADO ACTIVO === */
+  .experience-item-overlay[data-active="true"] {
+    background-color: #ffcc0092/* Amarillo */
+  }
+
+  /* Texto Blanco en Activo */
+  .experience-item-overlay[data-active="true"] .item-title {
+    color: white !important;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  }
+
+  .experience-item-overlay[data-active="true"] .experience-description {
+    opacity: 1;
+    display: block; 
+  }
+  
+  /* Borde separador sutil en activo */
+  .experience-item-overlay[data-active="true"] {
+    border-color: rgba(255,255,255,0.3);
+  }
+
+  /* === ESTADO INACTIVO === */
+  /* Ocultar descripción cuando no está activo */
+  .experience-item-overlay[data-active="false"] .experience-description {
+    display: none;
+    opacity: 0;
+  }
+
+  /* === ESTADO TRAIL (Estela de luz) === */
+  .experience-item-overlay.lighting-up {
+    background-color: #ffcc0092  !important;
+    transition: background-color 0.2s ease;
+  }
+  
+  /* Hover básico si no está activo ni iluminado */
+  .experience-item-overlay:hover:not([data-active="true"]):not(.lighting-up) {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+</style>
+
+
+<script>
+  function initExperienceSwitcher() {
+    const items = document.querySelectorAll('[data-experience-item]');
+    const images = document.querySelectorAll('[data-experience-image]');
+
+    if (!items.length) return;
+
+    let currentActiveIndex = 0;
+    let transitionLock = false; 
+
+    const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+    async function handleHover(targetIndex: number) {
+      if (targetIndex === currentActiveIndex || transitionLock) return;
+      
+      const prevIndex = currentActiveIndex;
+      currentActiveIndex = targetIndex; 
+      
+      const start = Math.min(prevIndex, targetIndex);
+      const end = Math.max(prevIndex, targetIndex);
+      
+      // 1. ILUMINAR CAMINO COMPLETO (Incluyendo el origen y el destino)
+      for (let i = start; i <= end; i++) {
+        items[i].classList.add('lighting-up');
+      }
+
+      // 2. CAMBIAR ESTADO ACTIVO (Para que el destino ya se vea seleccionado)
+      updateActiveState(targetIndex);
+
+      // 3. TIEMPO DE ESPERA (Estela visible)
+      await delay(500);
+
+      // 4. APAGAR CAMINO SECUENCIALMENTE (Desde el origen hacia el destino)
+      if (prevIndex < targetIndex) {
+        // Bajando (ej. de 1 a 4): Apagamos 1, luego 2, luego 3. El 4 se queda.
+        for (let i = prevIndex; i < targetIndex; i++) {
+          items[i].classList.remove('lighting-up');
+          await delay(10); 
+        }
+      } else {
+        // Subiendo (ej. de 4 a 1): Apagamos 4, luego 3, luego 2. El 1 se queda.
+        for (let i = prevIndex; i > targetIndex; i--) {
+          items[i].classList.remove('lighting-up');
+          await delay(10);
+        }
+      }
+      
+      // Limpieza final para asegurar que el activo no tenga la clase de trail
+      items[targetIndex].classList.remove('lighting-up');
+    }
+
+    function updateActiveState(index: number) {
+      items.forEach((item, i) => {
+        if (i === index) {
+          item.setAttribute('data-active', 'true');
+        } else {
+          item.setAttribute('data-active', 'false');
+        }
+      });
+
+      images.forEach((image, i) => {
+        if (i === index) {
+          image.classList.remove('opacity-0');
+          image.classList.add('opacity-100');
+        } else {
+          image.classList.remove('opacity-100');
+          image.classList.add('opacity-0');
+        }
+      });
+    }
+
+    items.forEach((item, index) => {
+      item.addEventListener('mouseenter', () => {
+        handleHover(index);
+      });
+    });
+
+    updateActiveState(0);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initExperienceSwitcher);
+  } else {
+    initExperienceSwitcher();
+  }
+  document.addEventListener('astro:page-load', initExperienceSwitcher);
+</script>
