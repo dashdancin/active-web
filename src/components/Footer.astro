@@ -1,0 +1,215 @@
+---
+interface Branch {
+  name: string;
+  address: string;
+  phone: string;
+}
+
+interface NavLink {
+  label: string;
+  href: string;
+}
+
+const { 
+  logoSrc = "/public/media/footer-logo-active.png",
+  logoAlt = "Active 24",
+  schedule = "Abierto 24 horas, 365 días al año",
+  branches = [
+    {
+      name: "Sucursal Del Valle",
+      address: "La Morena 811, Narvarte Poniente, Benito Juárez, 03020 Ciudad de México, CDMX",
+      phone: "56 1319 6494"
+    },
+    {
+      name: "Sucursal Narvarte",
+      address: "Gabriel Mancera 1357, Col del Valle Centro, Benito Juárez, 03100 Ciudad de México, CDMX",
+      phone: "55 1306 2821"
+    },
+    {
+      name: "Sucursal Insurgentes",
+      address: "Av. Insurgentes Sur 3655, Miguel Hidalgo 1ra Secc, Tlalpan, 14260 Ciudad de México, CDMX",
+      phone: "55 5158 7352"
+    }
+  ],
+  navLinks = [
+    { label: "Preguntas frecuentes", href: "#faq" },
+    { label: "Bolsa de empleo", href: "#empleo" },
+    { label: "Código de conducta", href: "#codigo" },
+    { label: "Calendario de clases", href: "#privacidad" },
+    { label: "Descarga la aplicación", href: "#daypass" },
+    { label: "Membresía", href: "#membresia" }
+  ]
+} = Astro.props;
+
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="footer bg-black text-white pt-16 pb-8">
+  <div class="max-w-7xl mx-auto px-8 md:px-12">
+    
+    <!-- Grid principal de 3 columnas -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-8 mb-12">
+      
+      <!-- COLUMNA 1: Logo y Horarios -->
+      <div class="footer-column">
+        <div class="mb-6">
+          <img 
+            src={logoSrc} 
+            alt={logoAlt}
+            class="h-16 md:h-14 w-auto mb-6"
+          />
+          <p class="text-yellow-active font-semibold text-lg mb-2">
+            <i class="fas fa-clock mr-2"></i>
+            Horarios
+          </p>
+          <p class="text-gray-300 text-base leading-relaxed">
+            {schedule}
+          </p>
+        </div>
+
+        <!-- Redes sociales en footer -->
+        <div class="mt-8">
+          <p class="text-gray-400 text-sm mb-3 uppercase tracking-wide">Síguenos</p>
+          <div class="flex gap-4">
+            <a href="https://www.facebook.com/active" target="_blank" rel="noopener noreferrer" class="social-icon-footer">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="https://www.instagram.com/active" target="_blank" rel="noopener noreferrer" class="social-icon-footer">
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://www.tiktok.com/@active" target="_blank" rel="noopener noreferrer" class="social-icon-footer">
+              <i class="fab fa-tiktok"></i>
+            </a>
+            <a href="https://www.linkedin.com/company/active" target="_blank" rel="noopener noreferrer" class="social-icon-footer">
+              <i class="fab fa-linkedin-in"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- COLUMNA 2: Sucursales -->
+      <div class="footer-column">
+        <div>
+          <h3 class="text-yellow-active font-bold text-lg mb-4 uppercase tracking-wide">
+            <i class="fas fa-map-marker-alt mr-2"></i>
+            Sucursales
+          </h3>
+          <div class="space-y-6">
+            {branches.map((branch) => (
+              <div class="border-l-2 border-yellow-active pl-4">
+                <h4 class="font-semibold text-white mb-2">{branch.name}</h4>
+                <p class="text-gray-400 text-sm mb-1 leading-relaxed">
+                  <i class="fas fa-location-dot mr-1 text-yellow-active"></i>
+                  {branch.address}
+                </p>
+                <a href={`tel:${branch.phone.replace(/\s/g, '')}`} class="text-gray-400 text-sm hover:text-yellow-active transition-colors">
+                  <i class="fas fa-phone mr-1 text-yellow-active"></i>
+                  {branch.phone}
+                </a>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- COLUMNA 3: Navegación -->
+      <div class="footer-column">
+        <h3 class="text-yellow-active font-bold text-lg mb-4 uppercase tracking-wide">
+          <i class="fas fa-compass mr-2"></i>
+          Navegación
+        </h3>
+        <nav>
+          <ul class="space-y-3">
+            {navLinks.map((link) => (
+              <li>
+                <a 
+                  href={link.href}
+                  class="nav-link text-gray-300 hover:text-yellow-active transition-colors duration-200 text-base flex items-center group"
+                >
+                  <i class="fas fa-chevron-right mr-2 text-yellow-active text-xs opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <!-- CTA en footer -->
+        <div class="mt-8 p-4 bg-yellow-active rounded-lg">
+          <p class="text-black font-bold mb-2">¿Listo para empezar?</p>
+          <a 
+            href="#daypass"
+            class="inline-block bg-black text-white px-6 py-2 rounded-full font-semibold text-sm hover:bg-gray-900 transition-colors"
+          >
+            Obtén tu día de prueba
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Línea divisoria -->
+    <div class="border-t border-gray-800 pt-8">
+      <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+        <p class="text-gray-500 text-sm text-center md:text-left">
+          © {currentYear} Dashdance. Todos los derechos reservados.
+        </p>
+        <div class="flex gap-6 text-sm">
+          <a href="#privacidad" class="text-gray-500 hover:text-yellow-active transition-colors">
+            Aviso de Privacidad
+          </a>
+          <a href="#terminos" class="text-gray-500 hover:text-yellow-active transition-colors">
+            Términos y Condiciones
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</footer>
+
+<style>
+  .footer-column {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .social-icon-footer {
+    width: 40px;
+    height: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    transition: all 0.3s ease;
+  }
+
+  .social-icon-footer:hover {
+    background: #FDC518;
+    border-color: #FDC518;
+    color: black;
+    transform: translateY(-2px);
+  }
+
+  .nav-link {
+    position: relative;
+    display: inline-block;
+  }
+
+  @media (max-width: 768px) {
+    .footer-column {
+      text-align: left;
+    }
+  }
+</style>
+
+<!-- Font Awesome (si no lo tienes ya) -->
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+/>

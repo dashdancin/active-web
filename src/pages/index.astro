@@ -2,8 +2,8 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Header from "../components/Header.astro";
 import Experience from "../components/Experience.astro";
-
-import SocialSection from "../components/Social.astro";
+import Social from "../components/Social.astro";
+import Footer from "../components/Footer.astro";
 
 // Personalizar redes sociales (opcional)
 const customSocialLinks = [
@@ -37,12 +37,6 @@ const customSocialLinks = [
   <!-- <section id="planes">...</section> -->
   <!-- <section id="servicios">...</section> -->
      <Experience />  
-  <!-- Opción 2: Personalizado -->
-
-  <SocialSection 
-    title="Síguenos"
-    backgroundColor="bg-black"
-    socialLinks={customSocialLinks}
-  />
- 
+   <!-- Footer -->
+  <Footer />
 </BaseLayout>

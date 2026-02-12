@@ -56,6 +56,14 @@
     background-color: #f6b500;
   }
 
+  .text-yellow-active {
+    color: #f6b500;
+  }
+
+  .border-yellow-active {
+    border-color: #f6b500;
+  }
+
   .hover\:bg-yellow-dark-active {
     &:hover {
       @media (hover: hover) {
