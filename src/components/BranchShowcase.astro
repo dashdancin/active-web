@@ -1,0 +1,363 @@
+---
+interface Branch {
+  name: string;
+  shortName: string;
+  href: string;
+  address: string;
+  videoSrc: string;
+}
+
+const {
+  title = "Nuestras sucursales",
+  eyebrow = "Entrena cerca de ti",
+  branches = [
+    {
+      name: "Del Valle",
+      shortName: "DEL VALLE",
+      href: "#footer",
+      address: "La Morena 811, Narvarte Poniente, Benito Juárez, CDMX",
+      videoSrc: "https://video.wixstatic.com/video/60c280_0db0d252919d4fb5ab3463853e9dbe27/480p/mp4/file.mp4"
+    },
+    {
+      name: "Narvarte",
+      shortName: "NARVARTE",
+      href: "#footer",
+      address: "Gabriel Mancera 1357, Del Valle Centro, Benito Juárez, CDMX",
+      videoSrc: "https://video.wixstatic.com/video/60c280_0bd7f4a1d0ba4a02a50cd1b4ea66f7b3/360p/mp4/file.mp4"
+    },
+    {
+      name: "Insurgentes",
+      shortName: "INSURGENTES",
+      href: "#footer",
+      address: "Av. Insurgentes Sur 3655, Tlalpan, CDMX",
+      videoSrc: "https://video.wixstatic.com/video/60c280_fe0e94e9dfb14c6abf3c3ea5bce20261/480p/mp4/file.mp4"
+    }
+  ]
+} = Astro.props as {
+  title?: string;
+  eyebrow?: string;
+  branches?: Branch[];
+};
+---
+
+<section id="sucursales" class="branch-showcase" data-branch-showcase>
+  <div class="branch-shell">
+    <header class="branch-header">
+      <p class="branch-eyebrow">{eyebrow}</p>
+      <h2>{title}</h2>
+      <p class="branch-copy">Tres puntos clave de la ciudad, una sola energía: entrenamiento sin pretextos.</p>
+    </header>
+
+    <div class="branch-grid">
+      {branches.map((branch, index) => (
+        <a href={branch.href} class="branch-card" style={`--branch-index: ${index};`} data-branch-card>
+          <video
+            class="branch-video"
+            src={branch.videoSrc}
+            autoplay
+            muted
+            loop
+            playsinline
+          ></video>
+
+          <div class="branch-overlay"></div>
+
+          <div class="branch-card-body">
+            <div class="branch-topline">
+              <span class="branch-index">0{index + 1}</span>
+            </div>
+
+            <div class="branch-copy-block">
+              <p class="branch-label">{branch.shortName}</p>
+              <p class="branch-address">{branch.address}</p>
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .branch-showcase {
+    background:
+      radial-gradient(circle at top left, rgba(246, 181, 0, 0.12), transparent 28%),
+      linear-gradient(180deg, #0d0d0d 0%, #171717 100%);
+    padding: 5rem 1.5rem;
+  }
+
+  .branch-shell {
+    margin: 0 auto;
+    max-width: 88rem;
+  }
+
+  .branch-header {
+    margin: 0 auto 2.75rem;
+    max-width: 42rem;
+    opacity: 0;
+    text-align: center;
+    transform: translateY(2rem);
+    transition:
+      opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .branch-eyebrow {
+    color: #f6b500;
+    font-family: 'BullText-Bold', monospace, sans-serif;
+    letter-spacing: 0.18em;
+    margin-bottom: 0.85rem;
+    text-transform: uppercase;
+  }
+
+  .branch-header h2 {
+    color: #fff;
+    font-size: clamp(2.5rem, 4vw, 4.5rem);
+    line-height: 0.95;
+    margin: 0;
+    text-transform: uppercase;
+  }
+
+  .branch-copy {
+    color: rgba(255, 255, 255, 0.72);
+    margin: 1rem auto 0;
+    max-width: 34rem;
+  }
+
+  .branch-grid {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 270px));
+    justify-content: center;
+  }
+
+  .branch-card {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1.75rem;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
+    display: block;
+    height: 480px;
+    opacity: 0;
+    overflow: hidden;
+    position: relative;
+    text-decoration: none;
+    transform: translateY(3rem) scale(0.94) rotate(calc((var(--branch-index) - 1) * 1.4deg));
+    transition:
+      opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.3s ease;
+    width: 270px;
+  }
+
+  .branch-showcase.is-visible .branch-header {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .branch-showcase.is-visible .branch-card {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0deg);
+    transition-delay: calc(0.15s + (var(--branch-index) * 0.16s));
+  }
+
+  .branch-video {
+    height: 100%;
+    inset: 0;
+    object-fit: cover;
+    position: absolute;
+    transform: scale(1.06);
+    transition: transform 1.6s cubic-bezier(0.22, 1, 0.36, 1);
+    width: 100%;
+  }
+
+  .branch-showcase.is-visible .branch-video {
+    transform: scale(1);
+  }
+
+  .branch-overlay {
+    background:
+      linear-gradient(180deg, rgba(0, 0, 0, 0.22) 0%, rgba(0, 0, 0, 0.02) 40%, rgba(0, 0, 0, 0.7) 100%),
+      linear-gradient(135deg, rgba(246, 181, 0, 0.12), transparent 55%);
+    inset: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .branch-card-body {
+    display: flex;
+    flex-direction: column;
+    inset: 0;
+    justify-content: space-between;
+    padding: 1.25rem;
+    position: absolute;
+    z-index: 2;
+  }
+
+  .branch-topline {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .branch-index {
+    color: rgba(255, 255, 255, 0.7);
+    font-family: 'BullText-Bold', monospace, sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+  }
+
+  .branch-copy-block {
+    background: transparent;
+    max-width: 90%;
+    opacity: 0;
+    transform: translateY(1.2rem);
+    transition:
+      opacity 0.55s ease,
+      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .branch-label {
+    color: #f6b500;
+    font-family: 'BullText-Bold', monospace, sans-serif;
+    font-size: 0.86rem;
+    letter-spacing: 0.18em;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+  }
+
+  .branch-address {
+    color: #fff;
+    font-family: 'BullText-Medium', monospace, sans-serif;
+    font-size: 1.2rem;
+    line-height: 1.18;
+    margin: 0;
+    text-transform: uppercase;
+  }
+
+  .branch-showcase.is-visible .branch-copy-block {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: calc(0.5s + (var(--branch-index) * 0.16s));
+  }
+
+  .branch-showcase.is-visible .branch-card:nth-child(1) {
+    animation: branchFanLeft 0.95s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: 0.14s;
+  }
+
+  .branch-showcase.is-visible .branch-card:nth-child(2) {
+    animation: branchFanCenter 0.95s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: 0.3s;
+  }
+
+  .branch-showcase.is-visible .branch-card:nth-child(3) {
+    animation: branchFanRight 0.95s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: 0.46s;
+  }
+
+  .branch-card:hover {
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.3);
+  }
+
+  .branch-card:hover .branch-video {
+    transform: scale(1.06);
+  }
+
+  @keyframes branchFanLeft {
+    0% {
+      opacity: 0;
+      transform: translate3d(64px, 72px, 0) scale(0.84) rotate(-12deg);
+    }
+
+    58% {
+      opacity: 1;
+      transform: translate3d(-14px, -10px, 0) scale(1.02) rotate(-3deg);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+    }
+  }
+
+  @keyframes branchFanCenter {
+    0% {
+      opacity: 0;
+      transform: translate3d(0, 84px, 0) scale(0.8);
+    }
+
+    60% {
+      opacity: 1;
+      transform: translate3d(0, -12px, 0) scale(1.03);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+  }
+
+  @keyframes branchFanRight {
+    0% {
+      opacity: 0;
+      transform: translate3d(-64px, 72px, 0) scale(0.84) rotate(12deg);
+    }
+
+    58% {
+      opacity: 1;
+      transform: translate3d(14px, -10px, 0) scale(1.02) rotate(3deg);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .branch-header,
+    .branch-card,
+    .branch-video,
+    .branch-copy-block {
+      animation: none !important;
+      opacity: 1;
+      transform: none;
+      transition: none !important;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .branch-showcase {
+      padding: 6rem 2rem;
+    }
+
+    .branch-grid {
+      gap: 1.5rem;
+    }
+  }
+</style>
+
+<script is:inline>
+  (() => {
+    const showcase = document.querySelector('[data-branch-showcase]');
+    if (!showcase) return;
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      showcase.classList.add('is-visible');
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return;
+        showcase.classList.add('is-visible');
+        observer.disconnect();
+      },
+      {
+        threshold: 0.72,
+        rootMargin: '0px 0px -2% 0px'
+      }
+    );
+
+    observer.observe(showcase);
+  })();
+</script>
