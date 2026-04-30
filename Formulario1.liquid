@@ -1,0 +1,892 @@
+
+
+<script>
+    sc_raq_app_global.process_quote_list = function () {        
+
+        var tpl_quote_list = __sc__.template(ScJQuery_RAQ(sc_raq_app_global.get_template_id('#tpl_sc_raq_list')).html());
+        //sc_raq_settings.RequestAQuoteList.Title=null;
+        ScJQuery_RAQ('#sc_raq_list').append(tpl_quote_list({ sc_raq_settings: sc_raq_settings }));
+        ScJQuery_RAQ('#loading_list').show();
+
+        ScJQuery_RAQ('#sc_raq_list').off('click', '.raq-item-remove').on('click', '.raq-item-remove', function (evt) {
+            evt.preventDefault();
+            sc_raq_app_global.remove_item_from_list(ScJQuery_RAQ(this).attr('vid'));
+            window.location.reload();
+        });
+
+        ScJQuery_RAQ('#sc_raq_list').off('click', '#sc-shopify-load-submit-popup').on('click', "#sc-shopify-load-submit-popup", function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            sc_raq_app_global.open_submit_popup();
+            return;
+            //load_submit_popup(this);
+        });
+
+        ScJQuery_RAQ('body .sc-raq-add-to-quote-btn-hldr').on('click', "#sc-shopify-load-submit-popup", function (event) {
+            //__020                      
+            event.preventDefault();
+            event.stopPropagation();
+            sc_raq_app_global.open_submit_popup();
+            return;
+            //load_submit_popup(this);
+        });
+
+
+
+        sc_raq_app_global.convertExtraOptionPrices = function (items) {
+            return items.map(item => {
+                if (item.total_extra_option) {
+                    for (let [key, option] of Object.entries(item.total_extra_option)) {
+                        var formattedPrice = sc_raq_app_global.convert_current_currency_value(option.price);
+                        option.price = parseFloat(formattedPrice).toFixed(2);
+                    }
+                }
+                if (item.total_extra_price) {
+                    var formattedPrice_2 = sc_raq_app_global.convert_current_currency_value(item.total_extra_price);
+                    item.total_extra_price = parseFloat(formattedPrice_2).toFixed(2);
+                }
+                return item;
+            });
+        };
+
+
+
+
+        sc_raq_app_global.get_quote_list_products(function (qlist_products) {            
+            var items = sc_raq_app_global.get_added_item_list();            
+            ScJQuery_RAQ('#loading_list').hide();
+            if (items.length == 0) {
+                ScJQuery_RAQ('#no_item').show();
+            }
+            else {
+
+                var arrReset = [];
+                var i = 0;
+
+                for (i = 0; i < items.length; i++) {
+                    if (typeof qlist_products.products_by_id[items[i].product_id] !== 'undefined') {
+                        var product = JSON.parse(JSON.stringify(qlist_products.products_by_id[items[i].product_id])); //Clone object
+                        product.variant = null;
+                        var j = 0;
+                        for (j = 0; j < product.variants.length; j++) {
+                            if (product.variants[j].id == items[i].variant_id) {
+                                product.variant = product.variants[j];
+                                break;
+                            }
+                        }
+
+                        var words=product.title.split(/\s+/);
+                        product.title=words.slice(2).join(" ");
+
+
+
+                        items[i].product = product;
+                        arrReset.push(items[i]);
+                    } else {
+                        console.log('Not Found : ', items[i].product_id);
+                    }
+                }
+                
+                var a_currency = sc_raq_app_global.get_active_currency();
+                if (a_currency == '') {
+                    a_currency = store_default_currency;
+                }
+
+                var updated_arrReset = sc_raq_app_global.convertExtraOptionPrices(arrReset);                
+
+                var tpl_quote_list_content = __sc__.template(ScJQuery_RAQ(sc_raq_app_global.get_template_id('#tpl_sc_raq_list_content')).html());
+                ScJQuery_RAQ('#raq-form-container').append(tpl_quote_list_content({ sc_raq_settings: sc_raq_settings, items: updated_arrReset, acurrency: a_currency }));                
+                //__020
+                var __form_data = sc_raq_app_global.raq_form_settings;
+                var f_id = sc_raq_app_global.raq_form_settings.raq_global_form.id;
+                var c_field = sc_raq_app_global.raq_form_settings.raq_global_form.custom_fields;
+
+                if (c_field != '') {
+                    if (c_field.length > 0) {
+                        for (i = 0; i < c_field.length; ++i) {
+                            var cf = c_field[i];                            
+                        }
+                    }
+                }
+
+
+       
+                var tpl_quote_submit_form = __sc__.template(ScJQuery_RAQ(sc_raq_app_global.get_template_id('#tpl_sc_raq_quote_submit_form')).html()); 
+                var kk = tpl_quote_submit_form({ sc_raq_settings: sc_raq_settings, items: arrReset, c_field: c_field, f_id: f_id, p_type: 0, raq_form_data: JSON.parse(__form_data.raq_global_form.regular_fields) });                
+                //console.log('+++++++kk+++++++++++++', kk);
+
+                ScJQuery_RAQ('#raq-form-container').after(kk);                
+
+                //var tpl_quote_submit_form = __sc__.template(ScJQuery_RAQ(sc_raq_app_global.get_template_id('#tpl_sc_raq_quote_submit_form')).html());
+                //ScJQuery_RAQ('#raq-form-container form').append(tpl_quote_submit_form({ sc_raq_settings: sc_raq_settings, items: arrReset, c_field: c_field, f_id: f_id, p_type: 0, raq_form_data: JSON.parse(__form_data.raq_global_form.regular_fields) }));                
+                sc_raq_app_global.init_submit_popup();
+            }
+        });
+    };
+</script>
+
+
+<script>
+    sc_raq_app_global.init_submit_popup = function () {
+        //alert('++++');
+        // Get the modal
+        var sc_modal = document.getElementById("raq_quote_form_modal");
+
+
+        // Get the <span> element that closes the modal
+        var sc_modal_close = document.getElementsByClassName("sc-modal-close")[0];
+
+
+
+        // When the user clicks on <span> (x), close the modal
+        sc_modal_close.onclick = function () {
+            //sc_modal.style.display = "none";
+            sc_raq_app_global.close_submit_popup();
+        };
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function (event) {
+            if (event.target == sc_modal) {
+                sc_modal.style.display = "none";
+            }
+        };
+
+        //ScJQuery_RAQ('#raq_quote_form_modal').on('click','#raq_form_submit', function(event){
+        ScJQuery_RAQ('#raq_quote_form_modal').off('click', '#raq_form_submit').on('click', '#raq_form_submit', function (event) {            
+            event.preventDefault();
+            event.stopPropagation();
+            sc_raq_app_global.validateform();
+
+            //check if has extra product option APP at product page 
+            if (ScJQuery_RAQ('#epo-options-wrapper #epo-options .sc-epo-holder-area .epo-option').length > 0) {
+                if (ScJQuery_RAQ("body .epo-extra-price")[0]) {
+                    var epo_data = sc_raq_app_global.getEpoValues();
+                    if (epo_data && Object.keys(epo_data).length > 0) {
+                        var total_extra_option = sc_raq_app_global.updatePricesWithCurrency_epo(epo_data);
+                        var updated_total_extra_option = btoa(JSON.stringify(total_extra_option));
+                        var total_extra_price = sc_raq_app_global.getTotalPrice_epo(total_extra_option);
+                        ScJQuery_RAQ('input[name="has_additional_product_option_0"]').val(1);
+                        ScJQuery_RAQ('input[name="total_extra_option_0"]').val(updated_total_extra_option);
+                        ScJQuery_RAQ('input[name="total_extra_price_0"]').val(total_extra_price);
+                    } else {
+                        ScJQuery_RAQ('input[name="has_additional_product_option_0"]').val(0);
+                        ScJQuery_RAQ('input[name="total_extra_option_0"]').val();
+                        ScJQuery_RAQ('input[name="total_extra_price_0"]').val();
+                    }
+                }
+            }                        
+
+            ScJQuery_RAQ('#raq_form_submit_text').hide();
+            ScJQuery_RAQ('#raq_form_submit').prop({ disabled: true });
+            ScJQuery_RAQ('#raq_form_submit_loading').show();
+            sc_raq_app_global.submit_for_quote();
+        });
+    };
+
+
+    //----------------------------------
+    sc_raq_app_global.submit_for_quote = function () {
+        ScJQuery_RAQ('#form_error').slideUp();
+        var f_type = '';
+        var file = '';
+
+        if (document.querySelector('#raq_file_upload')) {
+
+            var fileInput = document.getElementById('raq_file_upload');
+            file = fileInput.files[0];
+
+            if (file) {
+                var f_error = 0;
+                var f_error_msg = '';
+                const allowedExtensions = ['gif', 'png', 'jpg', 'jpeg', 'txt', 'xls', 'xlsx', 'csv', 'doc', 'docx', 'pdf'];
+                const allowedTypes = [
+                    'image/gif', 'image/png', 'image/jpeg',
+                    'text/plain',
+                    'application/vnd.ms-excel',
+                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                    'text/csv',
+                    'application/msword',
+                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                    'application/pdf'
+                ];
+
+
+                const maxSize = 5 * 1024 * 1024; // 5MB
+                const fileName = file.name;
+                const fileExtension = fileName.split('.').pop().toLowerCase();
+                const fileType = file.type;
+                const fileSize = file.size;                
+
+                // Check file extension
+                if (!allowedExtensions.includes(fileExtension)) {                    
+                    f_error = 1;
+                    f_error_msg = 'Invalid file extension. Allowed: ' + allowedExtensions.join(', ');
+                }
+
+                // Check MIME type
+                if (f_error == 0) {
+                    if (!allowedTypes.includes(fileType)) {                        
+                        f_error = 1;
+                        f_error_msg = 'Invalid file type. Detected: ' + fileType;
+                        event.preventDefault();
+                    }
+                }
+
+                // Check file size
+                if (f_error == 0) {
+                    if (fileSize > maxSize) {
+                        alert('File size exceeds 4MB limit.');
+                        f_error = 1;
+                        f_error_msg = 'File size exceeds 5MB limit.'
+                        event.preventDefault();
+                    }
+                }
+
+                if (f_error == 1) {
+                    if ($('#raq_form_submit_onpage').length > 0) {
+                        $('#raq_form_submit_onpage').prop('disabled', false);
+                    }
+                    ScJQuery_RAQ('#form_error').html(f_error_msg);
+                    ScJQuery_RAQ('#form_error').slideDown();
+                    ScJQuery_RAQ('#raq_form_submit_loading').hide();
+                    ScJQuery_RAQ('#raq_form_submit_text').show();
+                    ScJQuery_RAQ('#raq_form_submit').prop({ disabled: false });
+                    ScJQuery_RAQ('#raq_file_upload').val('');
+                    setTimeout(
+                        function () {
+                            ScJQuery_RAQ('#form_error').slideUp();
+                        }, 5000);
+                    return false;
+                }
+
+                if (fileExtension == 'gif' || fileExtension == 'png' || fileExtension == 'jpg' || fileExtension == 'jpeg') {
+                    f_type = 'IMAGE';
+                } else {
+                    f_type = 'FILE';
+                }
+            }
+        }
+
+        var raq_fdata = new FormData();
+        raq_fdata.append('raq_name', (ScJQuery_RAQ('#raq_name').length > 0) ? ScJQuery_RAQ('#raq_name').val() : '');
+        raq_fdata.append('raq_fname', ScJQuery_RAQ('#raq_fname').length > 0 ? ScJQuery_RAQ('#raq_fname').val() : '');
+        raq_fdata.append('raq_lname', ScJQuery_RAQ('#raq_lname').length > 0 ? ScJQuery_RAQ('#raq_lname').val() : '');
+        raq_fdata.append('raq_email', ScJQuery_RAQ('#raq_email').val());
+        raq_fdata.append('raq_comments', ScJQuery_RAQ('#raq_comments').length > 0 ? ScJQuery_RAQ('#raq_comments').val() : '');
+        raq_fdata.append('raq_phone', ScJQuery_RAQ('#raq_phone').length > 0 ? ScJQuery_RAQ('#raq_phone').val() : '');
+        raq_fdata.append('raq_address', ScJQuery_RAQ('#raq_address').length > 0 ? ScJQuery_RAQ('#raq_address').val() : '');
+        raq_fdata.append('raq_company_name', ScJQuery_RAQ('#raq_company_name').length > 0 ? ScJQuery_RAQ('#raq_company_name').val() : '');
+        raq_fdata.append('raq_company_phone', ScJQuery_RAQ('#raq_company_phone').length > 0 ? ScJQuery_RAQ('#raq_company_phone').val() : '');
+
+        raq_fdata.append('raq_current_currency_code', (ScJQuery_RAQ('#raq_current_currency_code').length > 0) ? ScJQuery_RAQ('#raq_current_currency_code').val() : '');
+
+
+        //if(document.getElementById('raq_file_upload').files[0]){
+        raq_fdata.append('raq_file_upload', '');
+        if (file) {
+            raq_fdata.append('raq_file_upload', file);
+        }
+        raq_fdata.append('raq_file_type', f_type);
+
+        //-----------------new------------
+        if (ScJQuery_RAQ('#raq-popup-custom-fields-plc').length) {
+            var cfi_data = [];
+
+            var raq_cfi_plc = ScJQuery_RAQ('#raq-popup-custom-fields-plc');
+            ScJQuery_RAQ('.cfi-fld', raq_cfi_plc).each(function () {
+                var cfi_fld = ScJQuery_RAQ(this);
+                var cfi_id = parseInt(ScJQuery_RAQ.trim(cfi_fld.data('cfi-id')));
+                var cfi_type = ScJQuery_RAQ.trim(cfi_fld.data('cfi-type'));
+                
+                if (!isNaN(cfi_id) && (cfi_id > 0) && (cfi_type != '')) {
+                    if (cfi_type == 'text') cfi_data.push({ id: cfi_id, type: cfi_type, val: cfi_fld.val() });
+                    else if (cfi_type == 'textarea') cfi_data.push({ id: cfi_id, type: cfi_type, val: cfi_fld.val() });
+                    else if (cfi_type == 'checkbox') cfi_data.push({ id: cfi_id, type: cfi_type, val: (cfi_fld.is(':checked') ? 1 : 0) });
+                    else if (cfi_type == 'select') cfi_data.push({ id: cfi_id, type: cfi_type, val: cfi_fld.val() });
+                    else if (cfi_type == 'multi-select') cfi_data.push({ id: cfi_id, type: cfi_type, val: (cfi_fld.val() ? cfi_fld.val() : []) });
+                    else if (cfi_type == 'radio') {
+                        var cfi_name = ScJQuery_RAQ.trim(cfi_fld.data('cfi-name'));
+                        var rd_val = '';
+                        if (ScJQuery_RAQ("input:radio[name='" + cfi_name + "']:checked", raq_cfi_plc).length > 0) {
+                            rd_val = ScJQuery_RAQ("input:radio[name='" + cfi_name + "']:checked", raq_cfi_plc).val();
+                        }                        
+                        if (cfi_name != '') cfi_data.push({ id: cfi_id, type: cfi_type, val: rd_val });
+                    }
+                    else if (cfi_type == 'date-picker') cfi_data.push({ id: cfi_id, type: cfi_type, val: cfi_fld.val() });
+                }
+            });            
+            var kk = JSON.stringify(cfi_data);
+            raq_fdata.append('raq_cfi_data', kk);
+        }
+
+        raq_fdata.append('raq_form_type', 'raq-list-details');
+        //--------------------------------
+
+        var slides = $(".rh_item");
+        slides.each(function (key, value) {
+            raq_fdata.append($(this).attr("name"), $(this).val());
+        });
+
+        raq_fdata.append('store_money_format', store_money_format);
+
+        ScJQuery_RAQ.ajax({
+            type: 'POST',
+            //url: app_options.AppFrontPath + 'app_main/raq_post',
+            url: '/apps/request-a-quote/app-front/app_main/raq_post',            
+            data: raq_fdata,
+            contentType: false,
+            cache: false,
+            processData: false,
+        }).done(function (msg) {
+            
+            if (msg == 'success') {
+                var ptype = ScJQuery_RAQ('.raq-modal-body').attr('data-ptype');
+                ScJQuery_RAQ('#form_error').slideUp();
+                ScJQuery_RAQ('#raq-form-container').html('');
+                ScJQuery_RAQ('#raq_list_title').hide();
+                ScJQuery_RAQ('#success').show();
+                //  Remove the Cookie Data.
+                //alert(ptype);
+                if (ptype == 0) {
+
+                    //alert('okzz');
+                    sc_raq_app_global.clear_added_item_list();
+                    sc_raq_app_global.add_counter_to_link();
+                    sc_raq_app_global.raq_widget_qty('O');
+                    //sc_raq_app_global.close_submit_popup();
+                    ScJQuery_RAQ('#raq_form_submit_loading').hide();
+                    ScJQuery_RAQ('#raq_form_submit_text').show();
+                    ScJQuery_RAQ('#raq_form_submit').hide();
+
+                    setTimeout(function () {
+                        window.location.href = "{{ routes.root_url }}";
+                    }, 5000);
+
+                } else {
+                    ScJQuery_RAQ('#raq_form_submit_loading').hide();
+                    ScJQuery_RAQ('#raq_form_submit_text').show();
+
+                    ScJQuery_RAQ('#raq_form_submit').hide();
+
+                    setTimeout(
+                        function () {
+                            var ftype = $('.raq_hfields').attr('data-ftype');
+                            if (ftype == 'onpage') {
+                                $(".raq_onpage_form").delay(500).fadeOut();
+                                ScJQuery_RAQ('#raq_form_submit_onpage').delay(1000).show(0);
+                                ScJQuery_RAQ('#raq_form_submit_onpage').prop({ disabled: false });
+                                ScJQuery_RAQ('#raq_form_submit_onpage').hide();
+                            } else {
+                                ScJQuery_RAQ('#success').hide();
+                                sc_raq_app_global.close_submit_popup();
+                                ScJQuery_RAQ('#raq_form_submit').show();
+                                ScJQuery_RAQ('#raq_form_submit').prop({ disabled: false });
+
+
+                                const modalBody = document.querySelector('.raq-modal-body');
+                                if (modalBody) {
+                                    modalBody.querySelectorAll('input').forEach(input => input.value = '');
+                                    modalBody.querySelectorAll('textarea').forEach(textarea => textarea.value = '');
+                                }
+                            }
+                        }, 5000);
+                }
+
+            } else {                
+                if ($('body #raq_form_submit_onpage').length > 0) {                    
+                    $('#raq_form_submit_onpage').prop('disabled', false);
+                }
+                ScJQuery_RAQ('#form_error').html('');
+                ScJQuery_RAQ('#form_error').html(msg);               
+
+                ScJQuery_RAQ('#form_error').slideDown();
+                setTimeout(function () {
+                    ScJQuery_RAQ('#form_error').slideUp();
+                }, 5000);
+
+                ScJQuery_RAQ('#raq_form_submit_loading').hide();
+                ScJQuery_RAQ('#raq_form_submit_text').show();
+                ScJQuery_RAQ('#raq_form_submit').prop({ disabled: false });
+            }
+        });
+    };
+</script>    
+
+<style>
+    #sc_raq_list .sc-modal {
+        display: block;
+        position: relative;
+        z-index: unset;
+        left: unset;
+        top: unset;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgb(0,0,0);
+        background-color: unset;
+    }
+
+    #sc_raq_list .sc-modal-content {
+        position: relative;
+        background-color: unset;
+        margin: auto;
+        margin-top: auto;
+        padding: 0;
+        border: unset;
+        width: unset;
+        box-shadow: unset;
+        border-radius: unset;
+        animation: fadeIn 1s;
+        -webkit-animation: fadeIn 1s;
+        -moz-animation: unset;
+        -o-animation: fadeIn 1s;
+        -ms-animation: fadeIn 1s;
+        max-width: unset;
+        top: unset;
+        left: unset;
+        transform: unset;
+    }
+    #sc_raq_list .sc-modal-header{
+        display:block;
+    }
+    #sc_raq_list #sc-shopify-load-submit-popup{
+        display: none !important;
+    }
+    #sc_raq_list .row{
+        margin-right: unset;
+        margin-left: unset;
+        width: 100%;
+        padding-left: unset;
+        padding-right: unset;
+    }
+
+    #form_error{
+        padding-left: 10px !important;
+    }
+
+</style>
+
+
+
+<script id="tpl_sc_raq_quote_submit_form__custom_template" type="text/template">
+
+  
+        <style type="text/css">
+          #raq_quote_form_modal .sc-modal-body .row {margin: 0px 0px 10px; display: flex;}
+          .sc-shopiy-bs .alert-danger {
+            font-size: 12px;
+            padding: 10px;
+            max-width: 100%;
+          }
+          .sc-shopiy-bs .alert-success {
+            font-size: 12px;
+            padding: 10px;
+            line-height: 16px;
+            max-width: 100%;
+          }
+        </style>        
+        
+        <!-- The Modal -->
+<div id="raq_quote_form_modal" class="sc-modal john222">
+
+   <!-- Modal content -->
+<div class="sc-modal-content sc-shopiy-bs">
+  <div class="sc-modal-header">
+    <span class="sc-modal-close">&times;</span>
+    <h2><%= sc_raq_app_global.set_get_old_or_new_element_label('submit_for_quotation', sc_raq_settings.RequestAQuoteList.SubmitFormTitle? sc_raq_settings.RequestAQuoteList.SubmitFormTitle : 'Submit Your Quote')%></h2>
+  </div>
+  <div class="sc-modal-body raq-modal-body" data-ptype="<%= p_type %>"  data-test="<%= raq_form_data.RequesterName.NameTxt %>">
+
+  <input type="hidden" class="rh_item" name="raq_fid" id="raq_fid" value="<%= f_id %>" />
+  
+
+
+					<%
+            var cus_email = '';
+            var cus_name = '';
+            var cus_fname = '';
+            var cus_lname = '';
+
+            var cus_phone = '';
+            var cus_address = '';
+            var cus_company = '';
+           
+            if (sc_raq_logged_in_customer && typeof sc_raq_logged_in_customer === 'object') {
+                const addr = sc_raq_logged_in_customer.default_address || {};
+                cus_email   = sc_raq_logged_in_customer.customers_email || '';
+                cus_phone   = sc_raq_logged_in_customer.customers_phone || '';
+                cus_name    = addr.name || '';
+                cus_fname   = addr.first_name || '';
+                cus_lname   = addr.last_name || '';
+                cus_address = addr.address1 || '';
+                cus_company = addr.company || '';
+            }
+          %>
+
+
+    
+          <!-- Requester Name-->
+					<%
+					if (raq_form_data.RequesterName.FieldActive=='1') {
+						if (raq_form_data.RequesterName.Name == '1') {
+
+              var show_required = '';
+              if (raq_form_data.RequesterName.FieldRequired == 1) {
+                show_required = ' raq_required';
+              }
+  
+  
+          %>
+					<div class="row" style="max-width:100%;">
+						<input value="<%=cus_name%>" data-required="<%= raq_form_data.RequesterName.FieldRequired? raq_form_data.RequesterName.FieldRequired : 0%>" type="text" name="raq_name" id="raq_name" class="form-control <%=show_required%>" placeholder="<%= sc_raq_app_global.set_get_old_or_new_element_label('raq_form_name_text', raq_form_data.RequesterName.NameTxt? raq_form_data.RequesterName.NameTxt : 'Enter your Name')%>"/>
+					</div>
+						<% } else {
+              var show_required = '';
+              if (raq_form_data.RequesterName.FieldRequired == 1) {
+                show_required = ' raq_required';
+              }
+            %>
+					<div class="row" style="max-width:100%;">
+              <div class="col-sm-6" style="padding: unset;">                   
+                  <input value="<%=cus_fname%>" data-required="<%= raq_form_data.RequesterName.FieldRequired? raq_form_data.RequesterName.FieldRequired : 0%>" type="text" name="raq_fname" id="raq_fname" class="form-control <%=show_required%>" placeholder="<%= sc_raq_app_global.set_get_old_or_new_element_label('raq_form_first_name_text', raq_form_data.RequesterName.FnameTxt? raq_form_data.RequesterName.FnameTxt : 'Enter First Name')%>" style="max-width:98%;float: left;" />
+              </div>
+              <div class="col-sm-6" style="padding: unset;">
+                  <input value="<%=cus_lname%>" data-required="<%= raq_form_data.RequesterName.FieldRequired? raq_form_data.RequesterName.FieldRequired : 0%>" type="text" name="raq_lname" id="raq_lname" class="form-control <%=show_required%>" placeholder="<%= sc_raq_app_global.set_get_old_or_new_element_label('raq_form_last_name_text', raq_form_data.RequesterName.LnameTxt? raq_form_data.RequesterName.LnameTxt : 'Enter Last Name')%>" style="max-width:98%;float: right;" />
+              </div>
+					</div>
+						<%
+						}
+					}
+					%><!-- ./Requester Name -->
+
+					<!-- Requester Email -->
+					<div class="col-sm-6" style="padding: unset;">
+						<input value="<%=cus_email%>" data-required="1" type="text" name="raq_email" id="raq_email" class="form-control raq_required" placeholder="<%= sc_raq_app_global.set_get_old_or_new_element_label('raq_form_email_text', raq_form_data.Email.Txt? raq_form_data.Email.Txt : 'Enter your Email')%>" style="max-width:98%;float: left; margin-bottom: 10px"/>
+					</div><!-- ./Requester Email -->
+
+					<!-- Requester Phone Number -->
+					<% if (raq_form_data.Phone.FieldActive == '1') {
+                        var show_required = '';
+                        if (raq_form_data.Phone.FieldRequired == 1) {
+                          show_required = ' raq_required';
+                        }
+  
+  
+                    %>
+					<div class="col-sm-6" style="padding: unset;">
+						<input value="<%=cus_phone%>" data-required="<%= raq_form_data.Phone.FieldRequired? raq_form_data.Phone.FieldRequired : 0%>" type="text" name="raq_phone" id="raq_phone" placeholder="<%= sc_raq_app_global.set_get_old_or_new_element_label('raq_form_phone_text', raq_form_data.Phone.Txt? raq_form_data.Phone.Txt : 'Enter Phone Number')%>" class="form-control <%=show_required%>" style="max-width:98%;float: right;"/>
+					</div>
+					<% } %><!-- ./Requester Phone Number -->
+
+					<!-- Requester Address -->
+					<% if (raq_form_data.Address.FieldActive == '1') {
+                        var show_required = '';
+                        if (raq_form_data.Address.FieldRequired == 1) {
+                          show_required = ' raq_required';
+                        }
+  
+  
+                        %>
+					<div class="row" style="max-width: 100%;">
+						<textarea data-required="<%= raq_form_data.Address.FieldRequired? raq_form_data.Address.FieldRequired : 0%>" name="raq_address" id="raq_address" class="form-control <%=show_required%>" placeholder="<%= sc_raq_app_global.set_get_old_or_new_element_label('raq_form_address_text', raq_form_data.Address.Txt? raq_form_data.Address.Txt : 'Enter Address')%>"><%=cus_address%></textarea>
+					</div>
+					<% } %><!-- ./Requester Address -->
+
+					<!-- Requester Company Name -->
+					<% if (raq_form_data.CompanyName.FieldActive == '1') {
+                        var show_required = '';
+                        if (raq_form_data.CompanyName.FieldRequired == 1) {
+                          show_required = ' raq_required';
+                        }
+  
+                    %>
+					<div class="row" style="max-width: 100%;">
+						<input value="<%=cus_company%>" data-required="<%= raq_form_data.CompanyName.FieldRequired? raq_form_data.CompanyName.FieldRequired : 0%>" type="text" name="raq_company_name" id="raq_company_name" class="form-control <%=show_required%>" placeholder="<%= sc_raq_app_global.set_get_old_or_new_element_label('raq_form_company_name_text', raq_form_data.CompanyName.Txt? raq_form_data.CompanyName.Txt : 'Enter Company Name')%>"/>
+					</div>
+					<% } %><!-- ./Requester Company Name -->
+
+					<!-- Requester Company Address -->
+					<% if (raq_form_data.CompanyPhone.FieldActive == '1') {
+  
+                        var show_required = '';
+                        if (raq_form_data.CompanyPhone.FieldRequired == 1) {
+                          show_required = ' raq_required';
+                        }
+  
+                    %>
+					<div class="row" style="max-width: 100%;">
+						<input type="text" data-required="<%= raq_form_data.CompanyPhone.FieldRequired? raq_form_data.CompanyPhone.FieldRequired : 0%>" name="raq_company_phone" id="raq_company_phone" placeholder="<%= sc_raq_app_global.set_get_old_or_new_element_label('raq_form_company_phone_text', raq_form_data.CompanyPhone.Txt? raq_form_data.CompanyPhone.Txt : 'Enter Company Phone')%>" class="form-control <%=show_required%>"/>
+					</div>
+					<% } %><!-- ./Requester Company Address -->
+
+<!-- Custom Fields -->
+					<div style="clear: both;"></div>
+					<div id="raq-popup-custom-fields-plc" data-test="<%= c_field.length %>>
+						
+                        <% 
+                        //if (raq_form_data.hasOwnProperty('custom_fields')){ 
+                        	//if (raq_form_data.custom_fields.length > 0){
+                            if (c_field.length > 0){
+                        %>
+						<style type="text/css">
+						
+						</style>
+                        <%
+
+                        //var raq_custom_fields=raq_form_data.custom_fields;
+                        var raq_custom_fields=c_field;
+  
+    //alert(raq_custom_fields.length);
+  
+                        var i=0;
+                        var cfi=[];
+
+  //console.log(raq_custom_fields);
+
+  //console.log('ok====================');
+
+
+  
+                        for(i=0;i<raq_custom_fields.length;i++){
+                            
+                        	var cfi=raq_custom_fields[i];
+                            //cfi.field_id = cfi.field_id? parseInt(cfi.field_id) : 0;
+                            cfi.field_id = cfi.id? parseInt(cfi.id) : 0; 
+                            if(cfi.field_id <= 0){
+                            	continue;
+                            }
+                            cfi.field_title = cfi.field_title? cfi.field_title.trim() : 'NA';
+
+                            var foption = JSON.parse(cfi.field_options);
+  
+  
+  
+  
+
+							cfi.field_type = foption.field_type?foption.field_type:'';
+
+  
+							if (cfi.field_type == '') continue;
+							//'text', 'textarea', 'checkbox', 'radio', 'select', 'multi-select';
+
+                            cfi.is_required = foption.is_required?foption.is_required:0;
+                            cfi.placeholder_text = foption.placeholder_text?foption.placeholder_text.trim():'';
+                            cfi.is_checked = foption.is_checked?foption.is_checked:0;
+                        %>
+
+						<%
+							if (cfi.field_type == 'text') {
+								var field_label = cfi.placeholder_text? cfi.placeholder_text : cfi.field_title;
+                                var show_required = '';
+                                if (cfi.is_required == 1) {
+                                  show_required = ' raq_required';
+                                }
+  
+								%>
+								<div class="row" style="max-width: 100%;">
+									<input type="text" name="cfi-<%=cfi.field_id%>" data-required="<%=cfi.is_required%>" id="cfi-<%=cfi.field_id%>" data-cfi-id="<%=cfi.field_id%>" data-cfi-type="text" placeholder="<%=field_label%>" class="form-control cfi-fld <%=show_required%>"/>
+								</div>
+								<%
+							}
+                            else if (cfi.field_type == 'textarea') { 
+								var field_label = cfi.placeholder_text? cfi.placeholder_text : cfi.field_title;
+                                var show_required = '';
+                                if (cfi.is_required == 1) {
+                                  show_required = ' raq_required';
+                                }
+								%>
+								<div class="row" style="max-width: 100%;">
+									<textarea name="cfi-<%=cfi.field_id%>" data-required="<%=cfi.is_required%>" id="cfi-<%=cfi.field_id%>" data-cfi-id="<%=cfi.field_id%>" data-cfi-type="textarea" placeholder="<%=field_label%>" class="form-control cfi-fld <%=show_required%>"></textarea>
+								</div>
+								<%
+							}
+                            else if (cfi.field_type == 'checkbox') {
+                            	var field_label = cfi.field_title;
+                                var show_required = '';
+                                if (cfi.is_required == 1) {
+                                  show_required = '<span style="color: red;">&nbsp;* </span>';
+                                }
+  
+								var attr_checked = cfi.is_checked=='1'? 'checked="checked"' : '';                            %>	
+								<div class="row" style="max-width: 100%;">									
+									<input type="checkbox" name="cfi-<%=cfi.field_id%>" <%=attr_checked%> data-required="<%=cfi.is_required%>" id="cfi-<%=cfi.field_id%>" data-cfi-id="<%=cfi.field_id%>" data-cfi-type="checkbox" placeholder="<%=field_label%>" class="cfi-fld" style="display:inline;"/>&nbsp;&nbsp;<label style="margin-top: 5px;" for="cfi-<%=cfi.field_id%>"><%=field_label%> <%=show_required%></label>
+								</div>
+								<%
+							}
+                            else if (cfi.field_type == 'radio') {
+								var field_label = cfi.field_title;
+                                var show_required = '';
+                                if (cfi.is_required == 1) {
+                                  show_required = '<span style="color: red;">&nbsp;* </span>';
+                                }
+  
+                                cfi.options_text = foption.options_text? foption.options_text.trim() : '';
+                                var arr_tmp=[];
+                                if(cfi.options_text!=''){
+                                    var o_data = JSON.parse(cfi.options_text).toString();
+                                    //alert(o_data);
+                                	arr_tmp = o_data.split(',');
+                                }
+								
+								if (arr_tmp.length > 0) { 
+                            %>
+								<div class="row raq_cus_radio_container" style="max-width: 100%; flex-direction: column;">
+									<div data-cfi-name="cfi-<%=cfi.field_id%>" data-cfi-id="<%=cfi.field_id%>" data-cfi-type="radio" data-required="<%=cfi.is_required%>" class="cfi-fld" style="display: none;"></div>
+									<div style="font-size: 14px;font-weight: 700;"><%=field_label%><%=show_required%>  </div>
+                                    <div>
+    									<%
+                                        var k=0;
+    									for (k=0; k<arr_tmp.length; k++) {
+    										var fld_lbl = arr_tmp[k].trim();
+    										var fld_val = fld_lbl;
+    										var attr_checked = (k == 0)? (cfi.is_checked=='1'? 'checked="checked"' : '') : '';
+    									%>
+    									<input type="radio" name="cfi-<%=cfi.field_id%>" value="<%=fld_val%>" <%=attr_checked%> id="cfi-<%=cfi.field_id%>-<%=k%>" class="cfi-<%=cfi.field_id%>" style="display:inline;"/>
+                                        <label for="cfi-<%=cfi.field_id%>-<%=k%>"><%=fld_lbl%></label>&nbsp;
+    									<% } %>
+                                    </div>
+								</div>
+								<%
+								}
+							}
+                            else if (cfi.field_type == 'select') {
+								var field_label = cfi.field_title;
+                                var show_required = '';
+                                if (cfi.is_required == 1) {
+                                  show_required = '<span style="color: red;">&nbsp;* </span>';
+                                }
+  
+                                cfi.options_text = foption.options_text? foption.options_text.trim() : '';
+                                var arr_tmp=[];
+                                if(cfi.options_text!=''){
+                                    var o_data = JSON.parse(cfi.options_text).toString();
+                                	arr_tmp = o_data.split(',');
+                                }
+								
+								if (arr_tmp.length > 0) { 
+                            %>
+								<div class="row" style="max-width: 100%; flex-direction: column;">
+									<div style="font-size: 14px;font-weight: 700;"><%=field_label%> <%=show_required%></div>
+                                    <div>
+                                      <select name="cfi-<%=cfi.field_id%>" data-required="<%=cfi.is_required%>" id="cfi-<%=cfi.field_id%>" data-cfi-id="<%=cfi.field_id%>" data-cfi-type="select" class="form-control cfi-fld">
+  									<%
+                                      var k=0;
+  									for (k=0; k<arr_tmp.length; k++) {
+  										var fld_lbl = arr_tmp[k].trim();
+  										var fld_val = fld_lbl;
+  									%>
+                                      <option value="<%=fld_val%>"><%=fld_lbl%></option>
+  									<% } %>
+                                      </select>
+                                    </div>
+								</div>
+								<%
+								}
+							}
+                            else if (cfi.field_type == 'multi-select') {
+								var field_label = cfi.field_title;
+                                var show_required = '';
+                                if (cfi.is_required == 1) {
+                                  show_required = '<span style="color: red;">&nbsp;* </span>';
+                                }
+  
+                                cfi.options_text = foption.options_text? foption.options_text.trim() : '';
+                                var arr_tmp=[];
+                                if(cfi.options_text!=''){
+                                    var o_data = JSON.parse(cfi.options_text).toString();
+                                	arr_tmp = o_data.split(',');
+                                }
+								
+								if (arr_tmp.length > 0) { 
+                            %>
+								<div class="row" style="max-width: 100%; flex-direction: column;">
+									<div style="font-size: 14px;font-weight: 700;"><%=field_label%> <%=show_required%></div>
+                                    <div>
+                                      <select name="cfi-<%=cfi.field_id%>" data-required="<%=cfi.is_required%>" id="cfi-<%=cfi.field_id%>" data-cfi-id="<%=cfi.field_id%>" data-cfi-type="multi-select" class="form-control cfi-fld" multiple="yes">
+      									<%
+                                          var k=0;
+        									for (k=0; k<arr_tmp.length; k++) {
+        										var fld_lbl = arr_tmp[k].trim();
+        										var fld_val = fld_lbl;
+        									%>
+                                          <option value="<%=fld_val%>"><%=fld_lbl%></option>
+      									<% } %>
+                                      </select>
+                                    </div>
+								</div>
+								<%
+								}
+							} else if (cfi.field_type == 'date-picker') {
+								var field_label = cfi.placeholder_text? cfi.placeholder_text : cfi.field_title;
+                                var show_required = '';
+                                if (cfi.is_required == 1) {
+                                  show_required = '<span style="color: red;">&nbsp;* </span>';
+                                }
+								%>
+								<div class="row" style="max-width: 100%; flex-direction: column;">
+                                    <div style="font-size: 14px;font-weight: 700;"><%=field_label%> <%=show_required%></div>
+                                    <div>
+    									<input type="date" name="cfi-<%=cfi.field_id%>" data-required="<%=cfi.is_required%>" id="cfi-<%=cfi.field_id%>" data-cfi-id="<%=cfi.field_id%>" data-cfi-type="date-picker" class="form-control cfi-fld"/>
+                                    </div>
+								</div>
+								<%
+							}
+                            %>
+						<% 
+                        	}
+                        } 
+                        //} 
+                        %>
+					</div>
+					<div style="clear: both;"></div><!-- ./Custom Fields -->
+  
+
+                    <!-- FileUpload -->
+                    <% if (raq_form_data.FileUpload) { %>
+                    <% if (raq_form_data.FileUpload.FieldActive == '1') { %>
+  					<div class="row" style="max-width: 100%;">
+                          <p style="font-size: 14px;line-height: 18px;font-weight: bold;">Si necesita su cotización a nombre de una empresa o persona física, por favor de compartirnos su Constancia de Situación Fiscal.</p>
+                          <input type="file" name="raq_file_upload" id="raq_file_upload">
+  					</div>
+					<% } %><!-- ./FileUpload -->
+                    <% } %><!-- ./FileUpload -->
+
+					<div id="form_error" class="row alert alert-danger" style="max-width:100%; display:none; text-align:center;"></div>
+
+                    <div id="success" style="display: none;" class="col-sm-12 col-xs-12 alert-success text-center"><%=sc_raq_settings.RequestAQuoteList.Success?sc_raq_settings.RequestAQuoteList.Success:'<b>Thank You!<br />Your Quote Request sent to the store admin.</b>'%></div>
+		            <div id="no_item" style="display: none;" class="col-sm-12 col-xs-12"><%=sc_raq_settings.RequestAQuoteList.NoItem?sc_raq_settings.RequestAQuoteList.NoItem:'No Item added for quote.'%></div>
+
+
+<!-- -->
+    
+        <!-- Requester Notes -->
+        <% if (raq_form_data.Notes.FieldActive == '1') { %>
+        <div class="row" style="max-width: 100%;">
+            <textarea name="raq_comments" id="raq_comments" class="form-control" placeholder="<%= sc_raq_app_global.set_get_old_or_new_element_label('raq_form_note_text', raq_form_data.Notes.Txt? raq_form_data.Notes.Txt : 'Enter additional details or comments here')%>"></textarea>
+        </div>
+        <% } %><!-- ./Requester Notes -->
+
+  </div>
+  <div class="sc-modal-footer" style="text-align:right">
+    <button type="button" id="raq_form_submit" name="raq_form_submit" class="sc-raq-btn-design-<%=sc_raq_settings.PopupSubmitQuoteButton.DesignID%>">
+        <span id="raq_form_submit_text"><%=sc_raq_app_global.set_get_old_or_new_element_label('submit_button_text_for_modal_popup', sc_raq_settings.PopupSubmitQuoteButton.Text)%></span>
+        <span id="raq_form_submit_loading" style="display: none;">
+          <svg class="sc-shopify-qs-loader" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="margin: auto; background: rgba(0, 0, 0, 0) none repeat scroll 0% 0%; display: block; shape-rendering: auto;width:20px;height:20px" width="78px" height="78px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
+            <circle cx="50" cy="50" r="43" stroke-width="7" stroke="#a4b7c5" stroke-dasharray="67.54424205218055 67.54424205218055" fill="none" stroke-linecap="round">
+              <animateTransform attributeName="transform" type="rotate" repeatCount="indefinite" dur="1s" keyTimes="0;1" values="0 50 50;360 50 50"></animateTransform>
+                </circle>
+          </svg>
+    	</span>
+    </button>
+  </div>
+</div> 
+
+</div>
+        
+</script>
+
+<style>
+    #raq-popup-custom-fields-plc label{
+        margin=top:unset;
+    }
+</style>
