@@ -37,7 +37,7 @@ const DURATION = 6000;
       {/* Logo - Izquierda */}
       <div class="flex-shrink-0 main-btn">
         <img 
-          src="/public/media/hero-logo.avif" 
+          src="/media/hero-logo.avif" 
           alt="Active 24 Logo" 
           class="hero-logo-top"
           width="587"
@@ -287,14 +287,6 @@ const DURATION = 6000;
 
 <script is:inline>
   (function() {
-    // Flag para evitar múltiples inicializaciones
-    if (window.__heroSliderInitialized) {
-      console.log('⚠️ HeroSlider ya inicializado, saltando...');
-      return;
-    }
-    window.__heroSliderInitialized = true;
-
-    // Esta función se ejecuta cuando el DOM está listo
     function initHeroSlider() {
       console.log('🚀 Inicializando HeroSlider');
       
@@ -303,6 +295,11 @@ const DURATION = 6000;
         console.error('❌ No se encontró el contenedor del slider');
         return;
       }
+
+      if (container.dataset.initialized === 'true') {
+        return;
+      }
+      container.dataset.initialized = 'true';
 
       const slides = container.querySelectorAll('[data-slide-index]');
       const dots = container.querySelectorAll('[data-dot-index]');
@@ -411,6 +408,7 @@ const DURATION = 6000;
         if (autoSlideInterval) {
           clearInterval(autoSlideInterval);
         }
+        delete container.dataset.initialized;
       });
     }
 
@@ -420,5 +418,6 @@ const DURATION = 6000;
     } else {
       initHeroSlider();
     }
+    document.addEventListener('astro:page-load', initHeroSlider);
   })();
 </script>

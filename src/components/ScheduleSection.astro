@@ -98,19 +98,18 @@ const sessions = [
 
 <script>
   // Script simplificado y robusto
-  document.addEventListener('astro:page-load', initDialog);
-  document.addEventListener('DOMContentLoaded', initDialog);
-
   function initDialog() {
     const dialog = document.getElementById('class-dialog') as HTMLDialogElement;
     const closeBtn = document.getElementById('close-dialog-btn');
-    const cards = document.querySelectorAll('.js-class-card'); // Recuerda poner esta clase a tus tarjetas
+    const cards = document.querySelectorAll<HTMLElement>('.js-class-card');
 
     // TypeScript check
     if (!dialog || !closeBtn) return;
+    if (dialog.dataset.initialized === 'true') return;
+    dialog.dataset.initialized = 'true';
 
     // Función para abrir
-    const openDialog = (card) => {
+    const openDialog = (card: HTMLElement) => {
       // 1. Rellenar datos
       const title = card.getAttribute('data-name') || 'Clase';
       const time = card.getAttribute('data-time') || '--:--';
@@ -133,7 +132,9 @@ const sessions = [
       // 2. ABRIR NATIVAMENTE
       // .showModal() es la clave: pone el elemento en el Top Layer (encima de todo CSS)
       // y crea el backdrop automáticamente.
-      dialog.showModal(); 
+      if (!dialog.open) {
+        dialog.showModal();
+      }
     };
 
     // Función cerrar
@@ -158,4 +159,11 @@ const sessions = [
       }
     });
   }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initDialog);
+  } else {
+    initDialog();
+  }
+  document.addEventListener('astro:page-load', initDialog);
 </script>
