@@ -1,0 +1,225 @@
+---
+interface Pillar {
+  value: string;
+  label: string;
+}
+
+interface StoryPoint {
+  title: string;
+  text: string;
+}
+
+const {
+  eyebrow = "Conoce Active 24",
+  title = "Entrena con energía real, a tu ritmo y en tu ciudad",
+  intro = "Creamos Active 24 para quienes no quieren adaptar su vida al gimnasio, sino encontrar un espacio que sí se adapte a ellos: horarios amplios, equipo completo, comunidad cercana y una experiencia pensada para sostener resultados.",
+  pillars = [
+    { value: "24/7", label: "Acceso diseñado para rutinas reales" },
+    { value: "3", label: "Sucursales activas en la ciudad" },
+    { value: "100%", label: "Enfoque en acompañamiento y constancia" }
+  ],
+  story = [
+    {
+      title: "Más que un gimnasio",
+      text: "Aquí vienes a moverte, pero también a encontrar estructura, motivación y un lugar que te reciba igual de bien si entrenas antes del amanecer o al cierre del día."
+    },
+    {
+      title: "Entrenamiento sin fricción",
+      text: "Desde el acceso a clases y máquinas hasta la app y el seguimiento de tus metas, buscamos que cada paso sea claro, útil y sostenible."
+    },
+    {
+      title: "Comunidad que impulsa",
+      text: "Nos importa que el progreso se note en tu energía, tu disciplina y tu confianza. Por eso combinamos instalaciones sólidas con una experiencia mucho más humana."
+    }
+  ]
+} = Astro.props as {
+  eyebrow?: string;
+  title?: string;
+  intro?: string;
+  pillars?: Pillar[];
+  story?: StoryPoint[];
+};
+---
+
+<section id="conocenos" class="about-section">
+  <div class="about-shell">
+    <div class="about-grid">
+      <div class="about-left">
+        <p class="about-eyebrow">{eyebrow}</p>
+        <h2>{title}</h2>
+        <p class="about-intro">{intro}</p>
+
+        <div class="about-pillar-row">
+          {pillars.map((pillar) => (
+            <div class="about-pillar">
+              <span class="about-pillar-value">{pillar.value}</span>
+              <span class="about-pillar-label">{pillar.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div class="about-right">
+        {story.map((item, index) => (
+          <article class="about-story-card" style={`--story-index: ${index};`}>
+            <span class="about-story-index">0{index + 1}</span>
+            <h3>{item.title}</h3>
+            <p>{item.text}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about-section {
+    background:
+      radial-gradient(circle at top left, rgba(246, 181, 0, 0.15), transparent 20%),
+      linear-gradient(180deg, #111111 0%, #191919 100%);
+    overflow: hidden;
+    padding: 5.5rem 1.5rem 4rem;
+    position: relative;
+  }
+
+  .about-shell {
+    margin: 0 auto;
+    max-width: 88rem;
+  }
+
+  .about-grid {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: 1fr;
+  }
+
+  .about-left {
+    max-width: 42rem;
+  }
+
+  .about-eyebrow {
+    color: #f6b500;
+    font-family: 'BullText-Bold', monospace, sans-serif;
+    letter-spacing: 0.18em;
+    margin-bottom: 0.9rem;
+    text-transform: uppercase;
+  }
+
+  .about-left h2 {
+    color: #fff;
+    font-size: clamp(2.7rem, 5vw, 5.25rem);
+    line-height: 0.94;
+    margin: 0;
+    max-width: 13ch;
+    text-transform: uppercase;
+  }
+
+  .about-intro {
+    color: rgba(255, 255, 255, 0.76);
+    font-size: 1.05rem;
+    line-height: 1.65;
+    margin-top: 1.4rem;
+    max-width: 38rem;
+  }
+
+  .about-pillar-row {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-top: 2rem;
+  }
+
+  .about-pillar {
+    backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1.4rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 8rem;
+    padding: 1rem;
+  }
+
+  .about-pillar-value {
+    color: #f6b500;
+    font-family: 'BullText-Bold', monospace, sans-serif;
+    font-size: clamp(1.9rem, 3vw, 2.8rem);
+    line-height: 1;
+  }
+
+  .about-pillar-label {
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 0.92rem;
+    line-height: 1.35;
+    margin-top: 0.65rem;
+  }
+
+  .about-right {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+  }
+
+  .about-story-card {
+    background:
+      linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03)),
+      rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 1.6rem;
+    padding: 1.25rem 1.25rem 1.35rem;
+    position: relative;
+    transform: translateY(calc(var(--story-index) * 8px));
+    transition: transform 0.28s ease, border-color 0.28s ease, background-color 0.28s ease;
+  }
+
+  .about-story-card:hover {
+    background:
+      linear-gradient(145deg, rgba(246, 181, 0, 0.14), rgba(255, 255, 255, 0.04)),
+      rgba(255, 255, 255, 0.03);
+    border-color: rgba(246, 181, 0, 0.34);
+    transform: translateY(calc(var(--story-index) * 8px - 4px));
+  }
+
+  .about-story-index {
+    color: rgba(246, 181, 0, 0.86);
+    display: inline-block;
+    font-family: 'BullText-Bold', monospace, sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
+    margin-bottom: 0.8rem;
+  }
+
+  .about-story-card h3 {
+    color: #fff;
+    font-size: 1.45rem;
+    margin: 0 0 0.75rem;
+  }
+
+  .about-story-card p {
+    color: rgba(255, 255, 255, 0.74);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  @media (max-width: 767px) {
+    .about-pillar-row {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .about-section {
+      padding: 6rem 2rem 4.75rem;
+    }
+
+    .about-grid {
+      align-items: start;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      gap: 2.2rem;
+    }
+
+    .about-right {
+      padding-top: 1.2rem;
+    }
+  }
+</style>
