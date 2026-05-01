@@ -1,0 +1,421 @@
+---
+interface Plan {
+  name: string;
+  price: string;
+  cadence: string;
+  badge?: string;
+  tone: "light" | "accent" | "dark";
+  cta: string;
+  summary: string;
+  perks: string[];
+  includesLabel?: string;
+}
+
+const sharedBenefits = [
+  "Zona de casilleros",
+  "Duchas",
+  "Acceso a todas las máquinas",
+  "Clases",
+  "Acceso a la aplicación"
+];
+
+const {
+  plans = [
+    {
+      name: "Passday",
+      price: "$149",
+      cadence: "por acceso",
+      tone: "light",
+      cta: "Quiero mi passday",
+      summary: "La forma más rápida de vivir Active 24: entra, entrena y descubre el club a tu ritmo.",
+      perks: [...sharedBenefits]
+    },
+    {
+      name: "Mensual",
+      price: "$899",
+      cadence: "por mes",
+      tone: "dark",
+      cta: "Me quedo el mensual",
+      summary: "Perfecto para construir constancia con libertad, manteniendo acceso total mes a mes.",
+      perks: [...sharedBenefits]
+    },
+    {
+      name: "Anual",
+      price: "$7,990",
+      cadence: "por año",
+      badge: "Mejor valor",
+      tone: "accent",
+      cta: "Voy por el anual",
+      summary: "La opción más completa y más conveniente en relación con los otros planes, diseñada para aprovechar Active 24 al máximo durante todo el año.",
+      perks: [
+        "Incluye todo lo de Passday y Mensual",
+        "1 asesoría al mes con nutriólogo",
+        "1 asesoría al mes con entrenador",
+        "Acceso a sorteos por premios",
+        "Eventos especiales",
+        "Acceso a las 3 sucursales"
+      ],
+      includesLabel: "Beneficios premium"
+    }
+  ]
+} = Astro.props as { plans?: Plan[] };
+---
+
+<section id="membresia" class="membership-section">
+  <div class="membership-shell">
+    <header class="membership-header">
+      <p class="membership-eyebrow">Planes Active 24</p>
+      <h2 id="planes">Membresias para cada ritmo</h2>
+      <p class="membership-copy">
+        Desde un acceso rapido hasta una experiencia completa con beneficios premium y ahorro real a largo plazo.
+      </p>
+    </header>
+
+    <div class="membership-grid">
+      {plans.map((plan, index) => (
+        <article class:list={["membership-card", `membership-card-${plan.tone}`]} style={`--plan-index: ${index};`}>
+          <div class="membership-card-top">
+            <div>
+              <p class="membership-name">{plan.name}</p>
+              <div class="membership-price-line">
+                <span class="membership-price">{plan.price}</span>
+                <span class="membership-cadence">{plan.cadence}</span>
+              </div>
+            </div>
+
+            {plan.badge && <span class="membership-badge">{plan.badge}</span>}
+          </div>
+
+          <div class="membership-content">
+            <p class="membership-summary">{plan.summary}</p>
+
+            <a href="#inscribirme" class="membership-cta">{plan.cta}</a>
+          </div>
+
+          <div class="membership-benefits">
+            <p class="membership-benefits-title">{plan.includesLabel ?? "Incluye"}</p>
+            <ul>
+              {plan.perks.map((perk) => (
+                <li>{perk}</li>
+              ))}
+            </ul>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <div id="inscribirme" class="membership-footer-note">
+      <p>
+        El plan anual concentra mas beneficios, acceso total a las 3 sucursales y un costo mas conveniente frente al pago acumulado del plan mensual.
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .membership-section {
+    background:
+      radial-gradient(circle at top right, rgba(246, 181, 0, 0.16), transparent 22%),
+      linear-gradient(180deg, #f3f0e8 0%, #ece5d6 100%);
+    padding: 5rem 1.5rem;
+  }
+
+  .membership-shell {
+    margin: 0 auto;
+    max-width: 88rem;
+  }
+
+  .membership-header {
+    margin: 0 auto 2.75rem;
+    max-width: 46rem;
+    text-align: center;
+  }
+
+  .membership-eyebrow {
+    color: #6c5400;
+    font-family: 'BullText-Bold', monospace, sans-serif;
+    letter-spacing: 0.18em;
+    margin-bottom: 0.85rem;
+    text-transform: uppercase;
+  }
+
+  .membership-header h2 {
+    color: #161616;
+    font-size: clamp(2.6rem, 4vw, 4.75rem);
+    line-height: 0.95;
+    margin: 0;
+    text-transform: uppercase;
+  }
+
+  .membership-copy {
+    color: rgba(22, 22, 22, 0.76);
+    margin: 1rem auto 0;
+    max-width: 36rem;
+  }
+
+  .membership-grid {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: 1fr;
+  }
+
+  .membership-card {
+    border-radius: 1.8rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    opacity: 0;
+    padding: 1.5rem;
+    position: relative;
+    transform: translateY(2rem) scale(0.97);
+    transition:
+      transform 0.45s ease,
+      box-shadow 0.45s ease,
+      border-color 0.3s ease;
+    overflow: hidden;
+    animation: membershipReveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation-delay: calc(var(--plan-index) * 0.12s);
+  }
+
+  .membership-card::before {
+    content: "";
+    inset: 0;
+    position: absolute;
+    pointer-events: none;
+  }
+
+  .membership-card-light {
+    background: linear-gradient(180deg, #fffdf7 0%, #f6efdf 100%);
+    border: 1px solid rgba(125, 96, 0, 0.12);
+    box-shadow: 0 16px 36px rgba(111, 86, 0, 0.08);
+    color: #161616;
+  }
+
+  .membership-card-light::before {
+    background: linear-gradient(145deg, rgba(246, 181, 0, 0.18), transparent 55%);
+  }
+
+  .membership-card-dark {
+    background: linear-gradient(180deg, #171717 0%, #090909 100%);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.24);
+    color: #fff;
+  }
+
+  .membership-card-dark::before {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.08), transparent 55%);
+  }
+
+  .membership-card-accent {
+    background:
+      radial-gradient(circle at top right, rgba(255, 244, 193, 0.22), transparent 28%),
+      linear-gradient(180deg, #f6b500 0%, #dca000 100%);
+    box-shadow: 0 24px 54px rgba(185, 130, 0, 0.28);
+    color: #111;
+  }
+
+  .membership-card-accent::before {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.26), transparent 60%);
+  }
+
+  .membership-card-top,
+  .membership-content,
+  .membership-summary,
+  .membership-cta,
+  .membership-benefits {
+    position: relative;
+    z-index: 1;
+  }
+
+  .membership-content {
+    display: flex;
+    flex: 1 0 auto;
+    flex-direction: column;
+  }
+
+  .membership-card-top {
+    align-items: flex-start;
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+  }
+
+  .membership-name {
+    font-family: 'BullText-Bold', monospace, sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.18em;
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+  }
+
+  .membership-price-line {
+    align-items: baseline;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+  }
+
+  .membership-price {
+    font-family: 'BullText-Bold', monospace, sans-serif;
+    font-size: clamp(2.35rem, 3.2vw, 3.65rem);
+    line-height: 0.95;
+  }
+
+  .membership-cadence {
+    font-size: 0.95rem;
+    opacity: 0.8;
+    text-transform: uppercase;
+  }
+
+  .membership-badge {
+    background: rgba(17, 17, 17, 0.12);
+    border-radius: 999px;
+    font-family: 'BullText-Bold', monospace, sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    padding: 0.55rem 0.9rem;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .membership-summary {
+    line-height: 1.5;
+    margin: 1.25rem 0 1.35rem;
+    max-width: 24rem;
+  }
+
+  .membership-cta {
+    align-items: center;
+    background: transparent;
+    border: 1.5px solid currentColor;
+    border-radius: 999px;
+    color: inherit;
+    display: inline-flex;
+    font-family: 'BullText-Bold', monospace, sans-serif;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    margin-top: auto;
+    min-height: 3.25rem;
+    padding: 0.85rem 1.2rem;
+    text-decoration: none;
+    transition:
+      transform 0.25s ease,
+      box-shadow 0.25s ease,
+      background-color 0.25s ease,
+      color 0.25s ease,
+      border-color 0.25s ease;
+  }
+
+  .membership-cta:hover {
+    box-shadow: 0 14px 26px rgba(0, 0, 0, 0.15);
+    background: rgba(17, 17, 17, 0.08);
+    transform: translateY(-2px);
+  }
+
+  .membership-card:hover {
+    box-shadow: 0 28px 56px rgba(0, 0, 0, 0.16);
+    transform: translateY(-10px) scale(1.01);
+  }
+
+  .membership-card-light:hover {
+    border-color: rgba(246, 181, 0, 0.34);
+  }
+
+  .membership-card-dark:hover {
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.32);
+  }
+
+  .membership-card-accent:hover {
+    box-shadow: 0 34px 66px rgba(185, 130, 0, 0.34);
+  }
+
+  .membership-benefits {
+    border-top: 1px solid rgba(255, 255, 255, 0.18);
+    margin-top: auto;
+    padding-top: 1.2rem;
+  }
+
+  .membership-card-light .membership-benefits,
+  .membership-card-accent .membership-benefits {
+    border-top-color: rgba(17, 17, 17, 0.12);
+  }
+
+  .membership-benefits-title {
+    font-family: 'BullText-Bold', monospace, sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.14em;
+    margin-bottom: 0.9rem;
+    text-transform: uppercase;
+  }
+
+  .membership-benefits ul {
+    display: grid;
+    gap: 0.8rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .membership-benefits li {
+    align-items: center;
+    display: flex;
+    gap: 0.75rem;
+    line-height: 1.35;
+  }
+
+  .membership-benefits li::before {
+    background: currentColor;
+    border-radius: 999px;
+    content: "";
+    display: inline-block;
+    flex: 0 0 auto;
+    height: 0.45rem;
+    opacity: 0.75;
+    width: 0.45rem;
+  }
+
+  .membership-footer-note {
+    margin: 1.75rem auto 0;
+    max-width: 56rem;
+    text-align: center;
+  }
+
+  .membership-footer-note p {
+    color: rgba(22, 22, 22, 0.72);
+    margin: 0;
+  }
+
+  @keyframes membershipReveal {
+    from {
+      opacity: 0;
+      transform: translateY(2rem) scale(0.97);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .membership-card {
+      animation: none;
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .membership-section {
+      padding: 6rem 2rem;
+    }
+
+    .membership-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .membership-card {
+      padding: 1.75rem;
+    }
+  }
+</style>
