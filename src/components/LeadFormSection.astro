@@ -1,0 +1,538 @@
+---
+const branches = [
+  "Del Valle",
+  "Narvarte",
+  "Insurgentes"
+];
+---
+
+<section id="inscribirme" class="lead-section">
+  <span id="daypass" class="lead-anchor" aria-hidden="true"></span>
+
+  <div class="lead-shell">
+    <div class="lead-grid">
+      <div class="lead-copy">
+        <p class="lead-eyebrow">Inscríbete u obtén un pase gratuito</p>
+        <h2>Tu acceso empieza aquí</h2>
+        <p class="lead-intro">
+          Déjanos tus datos, elige la sucursal que más te convenga y recibe tu acceso para continuar tu proceso con Active 24.
+        </p>
+
+        <div class="lead-route">
+          <div class="lead-route-step">
+            <span class="lead-route-node" aria-hidden="true"></span>
+            <div class="lead-route-content">
+              <span class="lead-route-kicker">Completa tu registro</span>
+              <p>Déjanos tus datos para generar tu acceso y ubicar la sucursal ideal para ti.</p>
+            </div>
+          </div>
+
+          <div class="lead-route-step">
+            <span class="lead-route-node" aria-hidden="true"></span>
+            <div class="lead-route-content">
+              <span class="lead-route-kicker">Recibe tu passday</span>
+              <p>Obtén tu código de acceso y prepárate para visitar el club que seleccionaste.</p>
+            </div>
+          </div>
+
+          <div class="lead-route-step">
+            <span class="lead-route-node" aria-hidden="true"></span>
+            <div class="lead-route-content">
+              <span class="lead-route-kicker">Conoce y entrena</span>
+              <p>Acude a la sucursal, recorre el gimnasio y vive una sesión real antes de tomar tu siguiente decisión.</p>
+            </div>
+          </div>
+
+          <div class="lead-route-step">
+            <span class="lead-route-node" aria-hidden="true"></span>
+            <div class="lead-route-content">
+              <span class="lead-route-kicker">Inscríbete en sucursal</span>
+              <p>Si decides continuar, completa tu inscripción y realiza tu pago directamente en recepción.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lead-panel">
+        <form class="lead-form" data-lead-form>
+          <div class="lead-field-grid">
+            <label class="lead-field">
+              <span>Nombre</span>
+              <input name="name" type="text" autocomplete="name" placeholder="Tu nombre completo" required />
+            </label>
+
+            <label class="lead-field">
+              <span>Dirección</span>
+              <input name="address" type="text" autocomplete="street-address" placeholder="Tu zona o dirección" required />
+            </label>
+
+            <label class="lead-field">
+              <span>Sucursal de interés</span>
+              <select name="branch" required>
+                <option value="" selected disabled>Selecciona una sucursal</option>
+                {branches.map((branch) => (
+                  <option value={branch}>{branch}</option>
+                ))}
+              </select>
+            </label>
+
+            <label class="lead-field">
+              <span>Correo electrónico</span>
+              <input name="email" type="email" autocomplete="email" placeholder="tucorreo@email.com" required />
+            </label>
+
+            <label class="lead-field lead-field-full">
+              <span>WhatsApp</span>
+              <input name="whatsapp" type="tel" autocomplete="tel" placeholder="55 1234 5678" required />
+            </label>
+          </div>
+
+          <button type="submit" class="lead-submit">Enviar solicitud</button>
+        </form>
+
+        <div class="lead-success" data-lead-success hidden>
+          <div class="lead-success-top">
+            <p class="lead-success-kicker">Solicitud enviada</p>
+            <h3>Tu acceso está listo</h3>
+            <p class="lead-success-copy" data-lead-message></p>
+          </div>
+
+          <div class="lead-pass">
+            <div class="lead-qr">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/d/d7/Commons_QR_code.png" alt="Código QR de acceso" />
+            </div>
+
+            <div class="lead-pass-details">
+              <p class="lead-pass-label">Código de acceso</p>
+              <p class="lead-pass-code" data-lead-code></p>
+              <p class="lead-pass-note">
+                Muéstralo en recepción y acude a la sucursal seleccionada para conocer el gimnasio y entrenar.
+              </p>
+            </div>
+          </div>
+
+          <button type="button" class="lead-reset" data-lead-reset>Registrar otra solicitud</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .lead-section {
+    background:
+      radial-gradient(circle at top left, rgba(246, 181, 0, 0.12), transparent 20%),
+      linear-gradient(180deg, #111111 0%, #1d1d1d 100%);
+    padding: 5.5rem 1.5rem 6rem;
+    position: relative;
+  }
+
+  .lead-anchor {
+    position: absolute;
+    top: -90px;
+  }
+
+  .lead-shell {
+    margin: 0 auto;
+    max-width: 88rem;
+  }
+
+  .lead-grid {
+    align-items: end;
+    display: grid;
+    gap: 1.8rem;
+    grid-template-columns: 1fr;
+  }
+
+  .lead-copy {
+    max-width: 40rem;
+  }
+
+  .lead-eyebrow {
+    color: #f6b500;
+    font-family: 'BullText-Bold', monospace, sans-serif;
+    letter-spacing: 0.18em;
+    margin-bottom: 0.95rem;
+    text-transform: uppercase;
+  }
+
+  .lead-copy h2 {
+    color: #fff;
+    font-size: clamp(2.6rem, 4.8vw, 5rem);
+    line-height: 0.94;
+    margin: 0;
+    max-width: 12ch;
+    text-transform: uppercase;
+  }
+
+  .lead-intro {
+    color: rgba(255, 255, 255, 0.76);
+    line-height: 1.65;
+    margin-top: 1.35rem;
+    max-width: 36rem;
+  }
+
+  .lead-route {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+    margin-top: 2rem;
+    position: relative;
+  }
+
+  .lead-route::before {
+    background: linear-gradient(180deg, rgba(246, 181, 0, 0.75), rgba(246, 181, 0, 0.15));
+    border-radius: 999px;
+    content: "";
+    left: 0.5rem;
+    position: absolute;
+    top: 0.9rem;
+    bottom: 0.9rem;
+    width: 2px;
+  }
+
+  .lead-route::after {
+    animation: leadRoutePulse 3.8s linear infinite;
+    background: linear-gradient(180deg, rgba(255, 244, 193, 0), rgba(255, 244, 193, 0.95), rgba(255, 244, 193, 0));
+    border-radius: 999px;
+    content: "";
+    height: 5.5rem;
+    left: 0.5rem;
+    position: absolute;
+    top: 0;
+    transform: translate(-50%, -120%);
+    width: 4px;
+    z-index: 0;
+  }
+
+  .lead-route-step {
+    align-items: flex-start;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1rem 1fr;
+    position: relative;
+  }
+
+  .lead-route-node {
+    background: #f6b500;
+    border: 2px solid rgba(23, 23, 23, 0.95);
+    border-radius: 999px;
+    box-shadow: 0 0 0 1px rgba(246, 181, 0, 0.25);
+    display: inline-flex;
+    height: 1rem;
+    margin-top: 0.45rem;
+    position: relative;
+    width: 1rem;
+    z-index: 1;
+  }
+
+  .lead-route-content {
+    padding: 0.15rem 0 0.7rem;
+  }
+
+  .lead-route-content p {
+    color: rgba(255, 255, 255, 0.74);
+    line-height: 1.55;
+    margin: 0.45rem 0 0;
+  }
+
+  .lead-route-kicker {
+    color: #f6b500;
+    font-family: 'BullText-Bold', monospace, sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  @keyframes leadRoutePulse {
+    0% {
+      opacity: 0;
+      transform: translate(-50%, -120%);
+    }
+
+    10% {
+      opacity: 1;
+    }
+
+    80% {
+      opacity: 1;
+    }
+
+    100% {
+      opacity: 0;
+      transform: translate(-50%, 420%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lead-route::after {
+      animation: none;
+      display: none;
+    }
+  }
+
+  .lead-panel {
+    align-self: end;
+    backdrop-filter: blur(14px);
+    background:
+      linear-gradient(155deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04)),
+      rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 1.8rem;
+    box-shadow: 0 22px 52px rgba(0, 0, 0, 0.22);
+    overflow: hidden;
+    padding: 1.25rem;
+  }
+
+  .lead-form,
+  .lead-success {
+    min-height: auto;
+  }
+
+  .lead-field-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+  }
+
+  .lead-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  .lead-field span {
+    color: rgba(255, 255, 255, 0.85);
+    font-family: 'BullText-Bold', monospace, sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .lead-field input,
+  .lead-field select {
+    appearance: none;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 1rem;
+    color: #fff;
+    min-height: 3.45rem;
+    outline: none;
+    padding: 0 1rem;
+    transition: border-color 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .lead-field input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  .lead-field select {
+    color: rgba(255, 255, 255, 0.82);
+  }
+
+  .lead-field input:focus,
+  .lead-field select:focus {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(246, 181, 0, 0.8);
+    box-shadow: 0 0 0 4px rgba(246, 181, 0, 0.12);
+  }
+
+  .lead-submit,
+  .lead-reset {
+    align-items: center;
+    background: #f6b500;
+    border: none;
+    border-radius: 999px;
+    color: #111;
+    cursor: pointer;
+    display: inline-flex;
+    font-family: 'BullText-Bold', monospace, sans-serif;
+    justify-content: center;
+    margin-top: 1.25rem;
+    min-height: 3.35rem;
+    padding: 0.85rem 1.3rem;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+    width: 100%;
+  }
+
+  .lead-submit:hover,
+  .lead-reset:hover {
+    background: #ffd452;
+    box-shadow: 0 14px 26px rgba(246, 181, 0, 0.18);
+    transform: translateY(-2px);
+  }
+
+  .lead-success {
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .lead-success-kicker {
+    color: #f6b500;
+    font-family: 'BullText-Bold', monospace, sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.14em;
+    margin-bottom: 0.65rem;
+    text-transform: uppercase;
+  }
+
+  .lead-success h3 {
+    color: #fff;
+    font-size: clamp(2rem, 3vw, 2.8rem);
+    line-height: 0.98;
+    margin: 0;
+    text-transform: uppercase;
+  }
+
+  .lead-success-copy {
+    color: rgba(255, 255, 255, 0.78);
+    line-height: 1.6;
+    margin-top: 1rem;
+  }
+
+  .lead-pass {
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1.5rem;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 112px 1fr;
+    margin-top: 1.5rem;
+    padding: 1rem;
+  }
+
+  .lead-qr {
+    align-items: center;
+    background: #fff;
+    border-radius: 1rem;
+    display: flex;
+    height: 112px;
+    justify-content: center;
+    overflow: hidden;
+    padding: 8px;
+    width: 112px;
+  }
+
+  .lead-qr img {
+    display: block;
+    height: 100%;
+    object-fit: contain;
+    width: 100%;
+  }
+
+  .lead-pass-label {
+    color: rgba(255, 255, 255, 0.62);
+    font-size: 0.85rem;
+    margin: 0 0 0.35rem;
+    text-transform: uppercase;
+  }
+
+  .lead-pass-code {
+    color: #f6b500;
+    font-family: 'BullText-Bold', monospace, sans-serif;
+    font-size: 1.7rem;
+    letter-spacing: 0.14em;
+    margin: 0;
+  }
+
+  .lead-pass-note {
+    color: rgba(255, 255, 255, 0.75);
+    line-height: 1.45;
+    margin: 0.7rem 0 0;
+  }
+
+  @media (min-width: 768px) {
+    .lead-field-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .lead-field-full {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .lead-section {
+      padding: 6rem 2rem;
+    }
+
+    .lead-grid {
+      gap: 2rem;
+      grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    }
+
+    .lead-panel {
+      padding: 1.5rem;
+    }
+  }
+</style>
+
+<script>
+  interface LeadPayload {
+    name: string;
+    address: string;
+    branch: string;
+    email: string;
+    whatsapp: string;
+  }
+
+  function initLeadForm() {
+    const form = document.querySelector<HTMLFormElement>('[data-lead-form]');
+    const success = document.querySelector<HTMLElement>('[data-lead-success]');
+    const message = document.querySelector<HTMLElement>('[data-lead-message]');
+    const code = document.querySelector<HTMLElement>('[data-lead-code]');
+    const reset = document.querySelector<HTMLButtonElement>('[data-lead-reset]');
+
+    if (!form || !success || !message || !code || !reset) return;
+    if (form.dataset.initialized === 'true') return;
+    form.dataset.initialized = 'true';
+
+    const generateAccessCode = (branch: string): string => {
+      const prefix = branch.slice(0, 3).toUpperCase();
+      const randomBlock = Math.random().toString(36).slice(2, 6).toUpperCase();
+      const serial = Math.floor(100 + Math.random() * 900);
+      return `${prefix}-${randomBlock}-${serial}`;
+    };
+
+    const showSuccess = (payload: LeadPayload) => {
+      const accessCode = generateAccessCode(payload.branch);
+      message.textContent = `${payload.name}, tu solicitud quedó registrada para ${payload.branch}. Presenta este código en recepción para activar tu passday y continuar tu proceso en la sucursal seleccionada.`;
+      code.textContent = accessCode;
+      form.hidden = true;
+      success.hidden = false;
+      form.reset();
+    };
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      const data = new FormData(form);
+      const payload: LeadPayload = {
+        name: String(data.get('name') ?? ''),
+        address: String(data.get('address') ?? ''),
+        branch: String(data.get('branch') ?? ''),
+        email: String(data.get('email') ?? ''),
+        whatsapp: String(data.get('whatsapp') ?? '')
+      };
+
+      window.setTimeout(() => {
+        showSuccess(payload);
+      }, 650);
+    });
+
+    reset.addEventListener('click', () => {
+      success.hidden = true;
+      form.hidden = false;
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initLeadForm);
+  } else {
+    initLeadForm();
+  }
+  document.addEventListener('astro:page-load', initLeadForm);
+</script>
