@@ -2,71 +2,108 @@
 import type { GymClass } from '../data/classes';
 
 const { sessions = [] } = Astro.props as { sessions: GymClass[] };
-console.log('sessions recibidas:', sessions);
+
+const days = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+const branches = [...new Set(sessions.map(s => s.branch))];
+const categories = [...new Set(sessions.map(s => s.category))];
 ---
 
-<section class="p-8 bg-gray-50 min-h-screen">
-  <div class="max-w-4xl mx-auto">
-    <h1 class="text-3xl font-bold mb-8 text-center">Horario Simplificado</h1>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      {sessions.map((session) => (
-        <button 
-          class="js-class-card bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all text-left border-l-4 border-yellow-500 group"
-          data-name={session.name}
-          data-time={session.time}
-          data-instructor={session.instructor}
-          data-branch={session.branch}
-          data-desc={session.description}
-        >
-          <h3 class="font-bold text-xl mb-1 group-hover:text-yellow-600 transition-colors">{session.name}</h3>
-          <p class="text-gray-500 text-sm mb-2">{session.time}</p>
-          <span class="inline-block bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded">
-            {session.branch}
-          </span>
-        </button>
-      ))}
+<section class="py-12 bg-gray-50">
+  <div class="container-astro">
+    <div class="schedule-header">
+      <div class="max-w-7xl mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-8">Horario de Clases</h2>
     </div>
-  </div>
-</section>
 
-<dialog 
-  id="class-dialog" 
-  class="backdrop:bg-black/80 backdrop:backdrop-blur-sm bg-transparent p-0 m-auto rounded-xl shadow-2xl max-w-lg w-[90%] open:animate-fade-in"
->
-  <div class="bg-white rounded-xl overflow-hidden relative">
+    <!-- Filtros -->
+    <div class="flex flex-wrap gap-4 mb-8 justify-center">
+      <select id="filter-branch" class="border border-gray-300 rounded-lg px-4 py-2 text-sm bg-white">
+        <option value="">Todas las sucursales</option>
+        {branches.map(b => <option value={b}>{b}</option>)}
+      </select>
+      <select id="filter-category" class="border border-gray-300 rounded-lg px-4 py-2 text-sm bg-white">
+        <option value="">Todas las clases</option>
+        {categories.map(c => <option value={c}>{c}</option>)}
+      </select>
+    </div>
     
-    <button 
-      id="close-dialog-btn"
-      class="absolute top-3 right-3 z-10 bg-white/80 hover:bg-white text-gray-800 rounded-full w-8 h-8 flex items-center justify-center transition-colors font-bold shadow-sm"
-    >
-      ✕
-    </button>
-
-    <div class="h-32 bg-gray-200 w-full object-cover relative">
-       <div class="absolute bottom-0 left-0 p-4 bg-gradient-to-t from-black/60 to-transparent w-full">
-         <h2 id="d-title" class="text-2xl font-bold text-white leading-none"></h2>
-       </div>
-    </div>
-
-    <div class="p-6">
-      <p id="d-desc" class="text-gray-600 text-sm mb-4 leading-relaxed"></p>
-
-      <div class="bg-gray-50 rounded-lg p-3 space-y-2 text-sm border border-gray-100">
-        <div class="flex justify-between">
-          <span class="text-gray-500"><i class="fas fa-clock w-5 text-yellow-600"></i> Horario</span>
-          <span id="d-time" class="font-medium text-gray-900"></span>
-        </div>
-        <div class="flex justify-between">
-          <span class="text-gray-500"><i class="fas fa-user w-5 text-yellow-600"></i> Instructor</span>
-          <span id="d-instructor" class="font-medium text-gray-900"></span>
-        </div>
-        <div class="flex justify-between">
-          <span class="text-gray-500"><i class="fas fa-map-marker-alt w-5 text-yellow-600"></i> Sucursal</span>
-          <span id="d-branch" class="font-medium text-gray-900"></span>
+    <!-- Grid por día -->
+      <div class="overflow-x-auto">
+        <div class="grid grid-cols-7 min-w-[900px] gap-3" id="schedule-grid">
+          {days.map(day => (
+            <div class="day-col" data-day={day}>
+              <!-- Header del día -->
+              <div class="bg-black text-white text-center py-3 rounded-lg mb-3">
+                <p class="font-bold text-sm uppercase tracking-wide">{day}</p>
+              </div>
+              <!-- Clases del día -->
+              <div class="space-y-2 day-cards">
+                {sessions
+                  .filter(s => s.day === day)
+                  .sort((a, b) => a.time.localeCompare(b.time))
+                  .map(session => (
+                    <button
+                      class="js-class-card w-full bg-white rounded-xl border border-gray-200 p-3 text-left hover:shadow-md hover:border-yellow-400 transition-all"
+                      data-name={session.name}
+                      data-time={session.time}
+                      data-instructor={session.instructor}
+                      data-branch={session.branch}
+                      data-desc={session.description}
+                      data-duration={session.duration}
+                      data-category={session.category}
+                      data-spots={session.spots}
+                      data-day={session.day}
+                    >
+                      <p class="font-bold text-xs uppercase tracking-wide mb-1">{session.name}</p>
+                      <p class="text-xs text-yellow-600 italic mb-2">{session.category}</p>
+                      <p class="text-xs text-gray-500">{session.instructor}</p>
+                      <div class="flex justify-between mt-2 text-xs text-gray-400">
+                        <span>{session.time}</span>
+                        <span>{session.duration}</span>
+                      </div>
+                      {session.spots === 0 && (
+                        <span class="mt-2 inline-block text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded-full">Cupo lleno</span>
+                      )}
+                      {session.spots > 0 && session.spots <= 3 && (
+                        <span class="mt-2 inline-block text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full">Últimos lugares</span>
+                      )}
+                    </button>
+                  ))
+                }
+              </div>
+            </div>
+          ))}
         </div>
       </div>
+    </div>
+  </div>
 
-      <button class="w-full mt-6 bg-yellow-500 text-black font-bold py-3 rounded-lg hover:bg-yellow-400 transition-colors shadow-md">
+</section>
+
+<!-- Modal -->
+<dialog
+  id="class-dialog"
+  class="backdrop:bg-black/80 backdrop:backdrop-blur-sm bg-transparent p-0 m-auto rounded-xl shadow-2xl max-w-lg w-[90%]"
+>
+  <div class="bg-white rounded-xl overflow-hidden relative">
+    <button id="close-dialog-btn" class="absolute top-3 right-3 z-10 bg-white/80 hover:bg-white text-gray-800 rounded-full w-8 h-8 flex items-center justify-center font-bold shadow-sm">✕</button>
+    <div class="h-32 bg-black w-full relative">
+      <div class="absolute bottom-0 left-0 p-4 w-full">
+        <p id="d-category" class="text-yellow-400 text-xs uppercase tracking-widest mb-1"></p>
+        <h2 id="d-title" class="text-2xl font-bold text-white"></h2>
+      </div>
+    </div>
+    <div class="p-6">
+      <p id="d-desc" class="text-gray-600 text-sm mb-4 leading-relaxed"></p>
+      <div class="bg-gray-50 rounded-lg p-3 space-y-2 text-sm border border-gray-100">
+        <div class="flex justify-between"><span class="text-gray-500">Día</span><span id="d-day" class="font-medium"></span></div>
+        <div class="flex justify-between"><span class="text-gray-500">Horario</span><span id="d-time" class="font-medium"></span></div>
+        <div class="flex justify-between"><span class="text-gray-500">Duración</span><span id="d-duration" class="font-medium"></span></div>
+        <div class="flex justify-between"><span class="text-gray-500">Instructor</span><span id="d-instructor" class="font-medium"></span></div>
+        <div class="flex justify-between"><span class="text-gray-500">Sucursal</span><span id="d-branch" class="font-medium"></span></div>
+        <div class="flex justify-between"><span class="text-gray-500">Lugares</span><span id="d-spots" class="font-medium"></span></div>
+      </div>
+      <button id="d-reserve-btn" class="w-full mt-6 bg-yellow-500 text-black font-bold py-3 rounded-lg hover:bg-yellow-400 transition-colors">
         Reservar Clase
       </button>
     </div>
@@ -74,91 +111,93 @@ console.log('sessions recibidas:', sessions);
 </dialog>
 
 <style>
-  /* Animación suave al abrir */
-  dialog[open] {
-    animation: zoomIn 0.2s ease-out;
-  }
+  dialog { border: none; position: fixed; inset: 0; }
+  dialog[open] { animation: zoomIn 0.2s ease-out; }
   @keyframes zoomIn {
     from { transform: scale(0.95); opacity: 0; }
     to { transform: scale(1); opacity: 1; }
   }
-  
-  /* Reset básico para el dialog */
-  dialog {
-    border: none; /* Quitar bordes por defecto del navegador */
-    position: fixed; /* Asegurar posición fija */
-    inset: 0; /* Centrado automático nativo */
-  }
+  .js-class-card[data-filtered="true"] { display: none; }
 </style>
 
 <script>
-  // Script simplificado y robusto
-  function initDialog() {
+  function init() {
     const dialog = document.getElementById('class-dialog') as HTMLDialogElement;
     const closeBtn = document.getElementById('close-dialog-btn');
-    const cards = document.querySelectorAll<HTMLElement>('.js-class-card');
-
-    // TypeScript check
     if (!dialog || !closeBtn) return;
     if (dialog.dataset.initialized === 'true') return;
     dialog.dataset.initialized = 'true';
 
-    // Función para abrir
-    const openDialog = (card: HTMLElement) => {
-      // 1. Rellenar datos
-      const title = card.getAttribute('data-name') || 'Clase';
-      const time = card.getAttribute('data-time') || '--:--';
-      const instructor = card.getAttribute('data-instructor') || 'Por confirmar';
-      const branch = card.getAttribute('data-branch') || '';
-      const desc = card.getAttribute('data-desc') || 'Sin descripción disponible.';
+    // Filtros
+    const filterBranch = document.getElementById('filter-branch') as HTMLSelectElement;
+    const filterCategory = document.getElementById('filter-category') as HTMLSelectElement;
 
-      const elTitle = document.getElementById('d-title');
-      const elDesc = document.getElementById('d-desc');
-      const elTime = document.getElementById('d-time');
-      const elInstructor = document.getElementById('d-instructor');
-      const elBranch = document.getElementById('d-branch');
+    function applyFilters() {
+      const branch = filterBranch.value;
+      const category = filterCategory.value;
+      document.querySelectorAll<HTMLElement>('.js-class-card').forEach(card => {
+        const matchBranch = !branch || card.dataset.branch === branch;
+        const matchCategory = !category || card.dataset.category === category;
+        card.dataset.filtered = (!matchBranch || !matchCategory) ? 'true' : 'false';
+      });
+    }
 
-      if(elTitle) elTitle.textContent = title;
-      if(elDesc) elDesc.textContent = desc;
-      if(elTime) elTime.textContent = time;
-      if(elInstructor) elInstructor.textContent = instructor;
-      if(elBranch) elBranch.textContent = branch;
+    filterBranch.addEventListener('change', applyFilters);
+    filterCategory.addEventListener('change', applyFilters);
 
-      // 2. ABRIR NATIVAMENTE
-      // .showModal() es la clave: pone el elemento en el Top Layer (encima de todo CSS)
-      // y crea el backdrop automáticamente.
-      if (!dialog.open) {
-        dialog.showModal();
-      }
-    };
-
-    // Función cerrar
-    const closeDialog = () => {
-      dialog.close(); // Método nativo
-    };
-
-    // Listeners
-    cards.forEach(card => {
-      card.addEventListener('click', () => openDialog(card));
+    // Modal
+    document.querySelectorAll<HTMLElement>('.js-class-card').forEach(card => {
+      card.addEventListener('click', () => {
+        (document.getElementById('d-title') as HTMLElement).textContent = card.dataset.name || '';
+        (document.getElementById('d-category') as HTMLElement).textContent = card.dataset.category || '';
+        (document.getElementById('d-desc') as HTMLElement).textContent = card.dataset.desc || '';
+        (document.getElementById('d-day') as HTMLElement).textContent = card.dataset.day || '';
+        (document.getElementById('d-time') as HTMLElement).textContent = card.dataset.time || '';
+        (document.getElementById('d-duration') as HTMLElement).textContent = card.dataset.duration || '';
+        (document.getElementById('d-instructor') as HTMLElement).textContent = card.dataset.instructor || '';
+        (document.getElementById('d-branch') as HTMLElement).textContent = card.dataset.branch || '';
+        const spots = Number(card.dataset.spots);
+        (document.getElementById('d-spots') as HTMLElement).textContent = spots === 0 ? 'Sin lugares' : `${spots} disponibles`;
+        const btn = document.getElementById('d-reserve-btn') as HTMLButtonElement;
+        btn.disabled = spots === 0;
+        btn.textContent = spots === 0 ? 'Sin lugares disponibles' : 'Reservar Clase';
+        if (!dialog.open) dialog.showModal();
+      });
     });
 
-    closeBtn.addEventListener('click', closeDialog);
-
-    // Cerrar al hacer click fuera (en el backdrop)
-    dialog.addEventListener('click', (e) => {
-      const rect = dialog.getBoundingClientRect();
-      const isInDialog = (rect.top <= e.clientY && e.clientY <= rect.top + rect.height &&
-        rect.left <= e.clientX && e.clientX <= rect.left + rect.width);
-      if (!isInDialog) {
-        dialog.close();
-      }
-    });
+    closeBtn.addEventListener('click', () => dialog.close());
+    dialog.addEventListener('click', e => { if (e.target === dialog) dialog.close(); });
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initDialog);
+    document.addEventListener('DOMContentLoaded', init);
   } else {
-    initDialog();
+    init();
   }
-  document.addEventListener('astro:page-load', initDialog);
+  document.addEventListener('astro:page-load', init);
 </script>
+
+<style>
+  .container-astro {
+    margin: 0 auto;
+    max-width: 88rem;
+  }
+
+  h2 {
+    font-family: 'BullText-Bold', monospace, sans-serif;
+    color: #161616;
+    font-size: clamp(2.6rem, 4vw, 4.75rem);
+    line-height: 0.95;
+    margin-bottom: 2.25rem;
+    text-transform: uppercase;
+  }
+
+  #filter-branch,
+  #filter-category {
+    color: black
+  }
+
+  .schedule-header {
+    margin-bottom: 2.25rem;
+  }
+</style>
