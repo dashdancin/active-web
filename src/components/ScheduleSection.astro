@@ -1,17 +1,13 @@
 ---
-// 1. Datos simplificados para prueba
-const sessions = [
-  { name: "Yoga", time: "07:00 AM", instructor: "Ana", branch: "Del Valle", description: "Clase relajante para iniciar el día." },
-  { name: "Box", time: "08:00 PM", instructor: "Carlos", branch: "Narvarte", description: "Alta intensidad y técnica de golpeo." },
-  { name: "Zumba", time: "09:00 AM", instructor: "Sofia", branch: "Insurgentes", description: "Baile y diversión asegurada." },
-];
+import type { GymClass } from '../data/classes';
+
+const { sessions = [] } = Astro.props as { sessions: GymClass[] };
+console.log('sessions recibidas:', sessions);
 ---
 
 <section class="p-8 bg-gray-50 min-h-screen">
   <div class="max-w-4xl mx-auto">
-    
     <h1 class="text-3xl font-bold mb-8 text-center">Horario Simplificado</h1>
-
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       {sessions.map((session) => (
         <button 
@@ -30,7 +26,6 @@ const sessions = [
         </button>
       ))}
     </div>
-
   </div>
 </section>
 

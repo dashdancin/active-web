@@ -1,14 +1,17 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Header from "../components/Header.astro";
-import ScheduleSection from "../components/ScheduleSection.astro";
+import ScheduleSection from '@/components/ScheduleSection.astro';
+import { classes } from '@/data/classes.ts';
+
+console.log('classes en página:', classes);
 ---
 
 <BaseLayout title="Horario de Clases | Active 24">
   <Header />
   
   <!-- Componente de horario con valores por defecto -->
-  <ScheduleSection />
+  <ScheduleSection sessions={classes} />
 
   <!-- Otras secciones aquí -->
 </BaseLayout>
