@@ -6,6 +6,7 @@ const { sessions = [] } = Astro.props as { sessions: GymClass[] };
 const days = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
 const branches = [...new Set(sessions.map(s => s.branch))];
 const categories = [...new Set(sessions.map(s => s.category))];
+const hasSessions = sessions.length > 0;
 ---
 
 <section class="py-12 bg-gray-50">
@@ -28,7 +29,7 @@ const categories = [...new Set(sessions.map(s => s.category))];
     </div>
     
     <!-- Grid por día -->
-      <div class="overflow-x-auto">
+      <div class:list={["overflow-x-auto", !hasSessions && "schedule-grid-shell--hidden"]} id="schedule-grid-shell">
         <div class="grid grid-cols-7 min-w-[900px] gap-3" id="schedule-grid">
           {days.map(day => (
             <div class="day-col" data-day={day}>
@@ -74,6 +75,25 @@ const categories = [...new Set(sessions.map(s => s.category))];
             </div>
           ))}
         </div>
+      </div>
+
+      <div
+        id="schedule-empty-state"
+        class:list={["schedule-empty-state", hasSessions && "is-hidden"]}
+        aria-live="polite"
+      >
+        <div class="schedule-empty-state__art" aria-hidden="true">
+          <svg class="no-result--logo" viewBox="0 0 192.13 127.88">
+            <path fill="#d2d2d2" d="M45.64,60a16.42,16.42,0,0,0-16.52,2.72,1.21,1.21,0,0,0-.15,1.7,1.22,1.22,0,0,0,.93.43,1.19,1.19,0,0,0,.77-.29,14.05,14.05,0,0,1,14-2.36,1.21,1.21,0,0,0,1.6-.62A1.2,1.2,0,0,0,45.64,60Z"></path>
+            <path fill="#d2d2d2" d="M151.84,58.9A16,16,0,0,0,146.49,60a1.2,1.2,0,1,0,1,2.2,14,14,0,0,1,14,2.37A1.21,1.21,0,0,0,163,62.73,16,16,0,0,0,151.84,58.9Z"></path>
+            <path fill="#d2d2d2" d="M190.77,50.32A71,71,0,0,0,189,41.47c-.62-2.49-1.32-5.3-2-9.7a23.8,23.8,0,0,1,.44-9.27c.42-2,.78-3.8.09-5.45a3.66,3.66,0,0,0-2.63-1.87,4.54,4.54,0,0,1-1.44-.63,8.35,8.35,0,0,0-9-1.15c-2.13,1-3.4,2.27-3.78,3.84a4.27,4.27,0,0,0,.12,2.39,4.82,4.82,0,0,0-2.1,4.67c.5,2.49,4.74,4.77,7,5.81A95,95,0,0,1,172.88,46a25.21,25.21,0,0,0-1.08,10.29C168,53.75,161.2,50,153.52,49.37c-8.12-.62-13.13,1.91-15.23,3.31C135.72,17.77,120.58.5,96.15.5,71.94.5,56.54,17.82,53.86,52.71c-2.08-1.39-7.1-4-15.26-3.33-7.68.6-14.49,4.38-18.27,6.91A25.57,25.57,0,0,0,19.25,46a93.57,93.57,0,0,1-2.78-15.87c2.23-1,6.47-3.32,7-5.8a4.82,4.82,0,0,0-2.11-4.67,4.26,4.26,0,0,0,.13-2.39c-.39-1.57-1.66-2.86-3.79-3.84a8.35,8.35,0,0,0-9,1.15,4.5,4.5,0,0,1-1.45.63,3.64,3.64,0,0,0-2.62,1.87c-.7,1.65-.33,3.41.08,5.45a23.36,23.36,0,0,1,.44,9.26c-.71,4.4-1.41,7.21-2,9.69a73.32,73.32,0,0,0-1.76,8.85C.45,57.19.2,61,1.23,64.2A19.19,19.19,0,0,1,1.88,68c.27,2.46.55,5,2.41,6.88A8,8,0,0,0,8.75,76.7a8.91,8.91,0,0,1,1.95.49c5.21,2.37,10.75,1.92,14.79,1.6,1.7-.14,3.81-.31,4.3,0a19.92,19.92,0,0,0,10.79,2.79,34.57,34.57,0,0,0,13.56-2.9c3.28,32.7,18.2,48.7,41.66,48.7s38.72-16.16,42.14-48.72a34.68,34.68,0,0,0,13.6,2.92,20,20,0,0,0,10.8-2.79c.48-.31,2.6-.14,4.3,0,4,.32,9.57.77,14.78-1.6a9.75,9.75,0,0,1,2-.5,7.9,7.9,0,0,0,4.46-1.86c1.85-1.87,2.13-4.41,2.4-6.87a19.16,19.16,0,0,1,.66-3.77C191.92,61,191.67,57.18,190.77,50.32ZM31.23,76.55c-1.24-.79-3.22-.63-6-.41-3.74.3-8.88.72-13.46-1.37a11.59,11.59,0,0,0-2.57-.69,6,6,0,0,1-3-1.11C5,71.75,4.78,69.86,4.54,67.68a22.37,22.37,0,0,0-.77-4.29c-.87-2.7-.62-6.25.23-12.71a69.12,69.12,0,0,1,1.71-8.55c.62-2.54,1.34-5.41,2.06-9.91A26.11,26.11,0,0,0,7.32,22c-.36-1.74-.62-3-.24-3.89a4.15,4.15,0,0,1,1-.36,6.88,6.88,0,0,0,2.3-1.08,5.73,5.73,0,0,1,6.22-.82c1.33.61,2.13,1.31,2.31,2a1.88,1.88,0,0,1-.31,1.4L18,20a3,3,0,0,1-1.6.64,4.73,4.73,0,0,1-.18-1.24,1.34,1.34,0,0,0-1.31-1.35h0a1.34,1.34,0,0,0-1.34,1.3,6.32,6.32,0,0,0,.22,1.67,2.71,2.71,0,0,0,2.57,2.28h.07A6.58,6.58,0,0,0,19.9,22a2.09,2.09,0,0,1,.92,1.86c-.2,1-3.48,3.07-6.29,4.28l-.88.37.07.95a99.42,99.42,0,0,0,3,17.34c2.36,8,.24,12.17.21,12.22l2,1.65c.09-.08,9.3-7.77,19.88-8.58,9.6-.75,14.31,3.43,14.36,3.47a1.19,1.19,0,0,0,.5.28c-.14,2.68-.22,5.45-.22,8.33q0,6.16.44,11.72C49.7,78.1,38.41,81.14,31.23,76.55Zm64.92,25.7C87.36,102.25,83,94,83,63.76c0-30,4.22-38.13,13-38.13s13.18,8.44,13.18,38.49S104.94,102.25,96.15,102.25Zm92.21-38.86a20.72,20.72,0,0,0-.77,4.28c-.24,2.19-.45,4.08-1.65,5.3a6.05,6.05,0,0,1-3.05,1.11,10.94,10.94,0,0,0-2.57.69c-4.58,2.08-9.72,1.67-13.47,1.37-2.74-.22-4.71-.38-5.95.41-7.21,4.6-18.55,1.52-22.7-.74.31-3.8.48-7.81.48-12.05q0-4.12-.2-8a1.38,1.38,0,0,0,.48-.28s4.75-4.22,14.35-3.48c10.59.82,19.79,8.52,19.88,8.59l2-1.65c0-.05-2.14-4.19.22-12.23a98.87,98.87,0,0,0,3-17.35l.07-.94-.87-.38c-2.82-1.2-6.09-3.26-6.3-4.28a2.12,2.12,0,0,1,.92-1.86,6.61,6.61,0,0,0,3.51,1.39h.07A2.71,2.71,0,0,0,178.38,21a6.56,6.56,0,0,0,.21-1.66,1.33,1.33,0,0,0-1.33-1.3h0a1.33,1.33,0,0,0-1.31,1.35,4.75,4.75,0,0,1-.17,1.23,3,3,0,0,1-1.6-.64l-.59-.74a1.9,1.9,0,0,1-.3-1.4c.18-.73,1-1.44,2.3-2.05a5.73,5.73,0,0,1,6.22.82,6.92,6.92,0,0,0,2.31,1.08,5.21,5.21,0,0,1,1,.36c.37.9.11,2.15-.25,3.89a26.5,26.5,0,0,0-.45,10.22c.73,4.51,1.44,7.38,2.07,9.92a69.32,69.32,0,0,1,1.71,8.56C189,57.13,189.23,60.68,188.36,63.39Z"></path>
+          </svg>
+        </div>
+        <p class="schedule-empty-state__eyebrow">Sin resultados por ahora</p>
+        <h3 class="schedule-empty-state__title">No encontramos clases para esta búsqueda.</h3>
+        <p class="schedule-empty-state__copy">
+          Ajusta los filtros o vuelve más tarde para revisar nuevas sesiones, horarios y sucursales disponibles.
+        </p>
       </div>
     </div>
   </div>
@@ -131,22 +151,36 @@ const categories = [...new Set(sessions.map(s => s.category))];
     // Filtros
     const filterBranch = document.getElementById('filter-branch') as HTMLSelectElement;
     const filterCategory = document.getElementById('filter-category') as HTMLSelectElement;
+    const emptyState = document.getElementById('schedule-empty-state');
+    const gridShell = document.getElementById('schedule-grid-shell');
+    const cards = Array.from(document.querySelectorAll<HTMLElement>('.js-class-card'));
+
+    function updateEmptyState() {
+      if (!emptyState || !gridShell) return;
+      const visibleCards = cards.filter(card => card.dataset.filtered !== 'true');
+      const hasVisibleCards = visibleCards.length > 0;
+
+      emptyState.classList.toggle('is-hidden', hasVisibleCards);
+      gridShell.classList.toggle('schedule-grid-shell--hidden', !hasVisibleCards);
+    }
 
     function applyFilters() {
       const branch = filterBranch.value;
       const category = filterCategory.value;
-      document.querySelectorAll<HTMLElement>('.js-class-card').forEach(card => {
+      cards.forEach(card => {
         const matchBranch = !branch || card.dataset.branch === branch;
         const matchCategory = !category || card.dataset.category === category;
         card.dataset.filtered = (!matchBranch || !matchCategory) ? 'true' : 'false';
       });
+      updateEmptyState();
     }
 
     filterBranch.addEventListener('change', applyFilters);
     filterCategory.addEventListener('change', applyFilters);
+    updateEmptyState();
 
     // Modal
-    document.querySelectorAll<HTMLElement>('.js-class-card').forEach(card => {
+    cards.forEach(card => {
       card.addEventListener('click', () => {
         (document.getElementById('d-title') as HTMLElement).textContent = card.dataset.name || '';
         (document.getElementById('d-category') as HTMLElement).textContent = card.dataset.category || '';
@@ -199,5 +233,64 @@ const categories = [...new Set(sessions.map(s => s.category))];
 
   .schedule-header {
     margin-bottom: 2.25rem;
+  }
+
+  .schedule-grid-shell--hidden {
+    display: none;
+  }
+
+  .schedule-empty-state {
+    display: grid;
+    place-items: center;
+    text-align: center;
+    gap: 0.9rem;
+    margin: 1rem auto 0;
+    padding: 3.25rem 1.5rem;
+    max-width: 42rem;
+    border: 1px solid rgba(17, 17, 17, 0.08);
+    border-radius: 2rem;
+    background:
+      radial-gradient(circle at top, rgba(246, 181, 0, 0.14), transparent 46%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(246, 246, 246, 0.98));
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.06);
+  }
+
+  .schedule-empty-state.is-hidden {
+    display: none;
+  }
+
+  .schedule-empty-state__art {
+    width: min(11rem, 55vw);
+  }
+
+  .no-result--logo {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .schedule-empty-state__eyebrow {
+    margin: 0;
+    color: #b28700;
+    font-size: 0.8rem;
+    font-family: 'BullText-Bold', monospace, sans-serif;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+
+  .schedule-empty-state__title {
+    margin: 0;
+    color: #111111;
+    font-size: clamp(1.3rem, 3vw, 1.9rem);
+    line-height: 1.05;
+    text-transform: none;
+  }
+
+  .schedule-empty-state__copy {
+    margin: 0;
+    max-width: 31rem;
+    color: #5b5b5b;
+    font-size: 0.98rem;
+    line-height: 1.65;
   }
 </style>

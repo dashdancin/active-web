@@ -1,14 +1,18 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import Header from "../components/Header.astro";
+import PageHeader from "../components/PageHeader.astro";
 import ScheduleSection from '@/components/ScheduleSection.astro';
 import { classes } from '@/data/classes.ts';
 import Footer from "@/components/Footer.astro";
 ---
 
 <BaseLayout title="Horario de Clases | Active 24">
-  
-  <!-- Componente de horario con valores por defecto -->
+  <PageHeader
+    eyebrow="Calendario Active 24"
+    title="Horario de clases"
+    subtitle="Consulta la programación semanal, explora por sucursal y encuentra el horario que mejor se acomode a tu ritmo."
+  />
+
   <ScheduleSection sessions={classes} />
 
   <Footer />

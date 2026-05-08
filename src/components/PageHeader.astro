@@ -1,0 +1,283 @@
+---
+interface NavItem {
+  label: string;
+  href: string;
+  isActive?: boolean;
+}
+
+const {
+  title,
+  subtitle,
+  eyebrow = "Active 24",
+  navItems = [
+    { label: "Conócenos", href: "/#conocenos" },
+    { label: "Sucursales", href: "/#sucursales" },
+    { label: "Horarios", href: "/horarios", isActive: true },
+    { label: "Membresía", href: "/#membresia" },
+    { label: "Inscribirme", href: "/#inscribirme" }
+  ]
+} = Astro.props as {
+  title: string;
+  subtitle?: string;
+  eyebrow?: string;
+  navItems?: NavItem[];
+};
+---
+
+<header class="page-header">
+  <div class="page-header__veil"></div>
+  <div class="page-header__glow page-header__glow--left"></div>
+  <div class="page-header__glow page-header__glow--right"></div>
+
+  <div class="page-header__inner">
+    <div class="page-header__topbar">
+      <a href="/" class="page-header__brand" aria-label="Ir al inicio de Active 24">
+        <img
+          src="/media/hero-logo.avif"
+          alt="Active 24 Logo"
+          class="page-header__logo"
+          width="587"
+          height="198"
+        />
+      </a>
+
+      <nav class="page-header__nav" aria-label="Navegación principal">
+        {navItems.map((item) => (
+          <a
+            href={item.href}
+            class:list={[
+              "page-header__nav-link",
+              item.isActive && "is-active"
+            ]}
+            aria-current={item.isActive ? "page" : undefined}
+          >
+            {item.label}
+          </a>
+        ))}
+      </nav>
+
+      <a href="/#daypass" class="page-header__cta">
+        Obtener pase
+      </a>
+    </div>
+
+    <div class="page-header__content">
+      <p class="page-header__eyebrow">{eyebrow}</p>
+      <h1 class="page-header__title">{title}</h1>
+      {subtitle && <p class="page-header__subtitle">{subtitle}</p>}
+    </div>
+  </div>
+</header>
+
+<style>
+  .page-header {
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at top left, rgba(246, 181, 0, 0.22), transparent 34%),
+      radial-gradient(circle at 85% 15%, rgba(255, 255, 255, 0.1), transparent 28%),
+      linear-gradient(135deg, #111111 0%, #1c1c1c 55%, #26211a 100%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .page-header__veil {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(0, 0, 0, 0.16), rgba(0, 0, 0, 0.32)),
+      repeating-linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.02) 0,
+        rgba(255, 255, 255, 0.02) 1px,
+        transparent 1px,
+        transparent 84px
+      );
+    pointer-events: none;
+  }
+
+  .page-header__glow {
+    position: absolute;
+    width: 18rem;
+    height: 18rem;
+    border-radius: 9999px;
+    filter: blur(80px);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .page-header__glow--left {
+    top: -6rem;
+    left: -4rem;
+    background: rgba(246, 181, 0, 0.28);
+  }
+
+  .page-header__glow--right {
+    right: -4rem;
+    bottom: -9rem;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .page-header__inner {
+    position: relative;
+    z-index: 1;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 1.2rem 1.5rem 3rem;
+  }
+
+  .page-header__topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.95rem 1.1rem;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 1.5rem;
+    background: rgba(17, 17, 17, 0.48);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  .page-header__brand {
+    display: flex;
+    flex-shrink: 0;
+  }
+
+  .page-header__logo {
+    width: 108px;
+    height: auto;
+  }
+
+  .page-header__nav {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    padding: 0.25rem;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .page-header__nav-link {
+    color: rgba(255, 255, 255, 0.74);
+    text-decoration: none;
+    padding: 0.7rem 1rem;
+    border-radius: 9999px;
+    font-size: 0.92rem;
+    line-height: 1;
+    transition: color 0.25s ease, background-color 0.25s ease, transform 0.25s ease;
+  }
+
+  .page-header__nav-link:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .page-header__nav-link.is-active {
+    color: #101010;
+    background: #f6b500;
+  }
+
+  .page-header__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #111111;
+    background: #f6b500;
+    min-height: 2.95rem;
+    padding: 0 1.2rem;
+    border-radius: 9999px;
+    font-size: 0.92rem;
+    font-family: 'BullText-Bold', monospace, sans-serif;
+    transition: transform 0.25s ease, background-color 0.25s ease;
+  }
+
+  .page-header__cta:hover {
+    background: #ffd24b;
+    transform: translateY(-1px);
+  }
+
+  .page-header__content {
+    padding-top: 3.5rem;
+    max-width: 42rem;
+  }
+
+  .page-header__eyebrow {
+    margin: 0 0 0.8rem;
+    color: #f6b500;
+    font-size: 0.8rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+  }
+
+  .page-header__title {
+    margin: 0;
+    font-size: clamp(2.2rem, 5vw, 4.6rem);
+    line-height: 0.94;
+    text-transform: uppercase;
+    max-width: 10ch;
+  }
+
+  .page-header__subtitle {
+    margin: 1rem 0 0;
+    max-width: 36rem;
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  @media (min-width: 960px) {
+    .page-header__nav {
+      display: flex;
+    }
+
+    .page-header__inner {
+      padding-left: 2rem;
+      padding-right: 2rem;
+      padding-bottom: 3.75rem;
+    }
+
+    .page-header__content {
+      padding-top: 4.6rem;
+    }
+  }
+
+  @media (max-width: 959px) {
+    .page-header__topbar {
+      flex-wrap: wrap;
+    }
+
+    .page-header__cta {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .page-header__inner {
+      padding: 1rem 1rem 2.5rem;
+    }
+
+    .page-header__topbar {
+      padding: 0.85rem;
+      border-radius: 1.25rem;
+    }
+
+    .page-header__logo {
+      width: 92px;
+    }
+
+    .page-header__content {
+      padding-top: 3rem;
+    }
+
+    .page-header__title {
+      max-width: 12ch;
+    }
+
+    .page-header__subtitle {
+      font-size: 0.95rem;
+    }
+  }
+</style>
