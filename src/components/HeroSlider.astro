@@ -2,8 +2,11 @@
 interface Slide {
   type: "video" | "image";
   src: string;
+  titleImage?: string;
   title: string;
   subtitle: string;
+  ctaLabel?: string;
+  ctaHref?: string;
 }
 
 const { slides = [
@@ -11,19 +14,26 @@ const { slides = [
     type: "image",
     src: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1920&h=1080&fit=crop",
     title: "Transforma tu cuerpo",
-    subtitle: "Entrenamientos personalizados y equipamiento de última generación"
+    subtitle: "Entrenamientos personalizados y equipamiento de última generación",
+    ctaLabel: "Ver planes",
+    ctaHref: "#planes"
   },
   {
     type: "image",
     src: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=1920&h=1080&fit=crop",
     title: "Alcanza tus metas",
-    subtitle: "Entrenadores profesionales te guiarán en cada paso"
+    subtitle: "Entrenadores profesionales te guiarán en cada paso",
+    ctaLabel: "Conoce al equipo",
+    ctaHref: "#entrenadores"
   },
   {
     type: "image",
     src: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=1920&h=1080&fit=crop",
+    titleImage: "/media/badge-promo.png",
     title: "Únete a la comunidad",
-    subtitle: "Más de 1000 miembros transformando sus vidas"
+    subtitle: "Más de 1000 miembros transformando sus vidas",
+    ctaLabel: "Inscribirme ahora",
+    ctaHref: "#inscribirme"
   }
 ] } = Astro.props as { slides?: Slide[] };
 
@@ -66,7 +76,6 @@ const DURATION = 6000;
     </div>
   </div>
 
-  <!-- Slides -->
   {slides.map((slide, index) => (
     <div
       class={`slide-item absolute inset-0 transition-opacity duration-1000 ${
@@ -91,31 +100,39 @@ const DURATION = 6000;
         />
       )}
 
-      <!-- Overlay -->
       <div class="absolute inset-0 bg-black/20"></div>
 
       {/* Contenido principal - Izquierda centro */}
       <div class="relative z-10 h-full flex items-center px-8 md:px-12 lg:px-16 max-w-[1920px] mx-auto w-full">
         <div class="absolute bottom-[120px] left-0 px-[64px] py-0 max-w-full">
-          <h1 class="text-4xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight mb-4">
+          {slide.titleImage && (
+            <img 
+              src={slide.titleImage} 
+              alt="Etiqueta del título" 
+              class="w-auto h-12 md:h-16 lg:h-20 mb-4 object-contain" 
+            />
+          )}
+          <h1 class="text-2xl md:text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-4">
             {slide.title}
           </h1>
           <p class="subtitle text-lg md:text-xl text-gray-200 mb-8">
             {slide.subtitle}
           </p>
 
-          <a
-            href="#planes"
-            class="inline-block bg-yellow-active hover:bg-yellow-dark-active transition-all duration-300 px-8 py-3 rounded-full font-semibold text-base md:text-lg"
-          >
-            Ver planes
-          </a>
+          {/* Renderizado condicional del botón: Solo si existen ambos datos */}
+          {slide.ctaLabel && slide.ctaHref && (
+            <a
+              href={slide.ctaHref}
+              class="inline-block bg-yellow-active hover:bg-yellow-dark-active transition-all duration-300 px-8 py-3 rounded-full font-semibold text-base md:text-lg"
+            >
+              {slide.ctaLabel}
+            </a>
+          )}
         </div>
       </div>
     </div>
   ))}
 
-  <!-- Dots -->
   <div class="absolute bottom-6 w-full z-20">
     <div class="flex justify-between mx-auto px-16 gap-6">
       {slides.map((slide, index) => (
