@@ -1,0 +1,314 @@
+---
+---
+
+<section class="newsletter-section">
+  <div class="newsletter-shell">
+    <div class="newsletter-stage">
+      <p class="newsletter-kicker">Actualizaciones Active 24</p>
+      <span class="newsletter-display" aria-hidden="true">Newsletter</span>
+
+      <form class="newsletter-form" data-newsletter-form>
+        <div class="newsletter-line">
+          <label class="newsletter-visually-hidden" for="newsletter-email">Correo electrónico</label>
+          <input
+            id="newsletter-email"
+            name="email"
+            type="email"
+            autocomplete="email"
+            placeholder="Ingresa tu correo electrónico"
+            required
+          />
+
+          <button type="submit" class="newsletter-submit">
+            <span class="newsletter-submit-icon" aria-hidden="true"></span>
+            <span>Suscribirme</span>
+          </button>
+        </div>
+
+        <label class="newsletter-consent">
+          <input type="checkbox" name="consent" required />
+          <span>Acepto el <a href="#privacidad">Aviso de Privacidad.</a></span>
+        </label>
+      </form>
+
+      <div class="newsletter-success" data-newsletter-success hidden>
+        <p class="newsletter-success-kicker">Suscripción confirmada</p>
+        <p class="newsletter-success-message" data-newsletter-message></p>
+        <button type="button" class="newsletter-reset" data-newsletter-reset>Registrar otro correo</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .newsletter-section {
+    background:
+      radial-gradient(circle at top left, rgba(246, 181, 0, 0.1), transparent 20%),
+      linear-gradient(180deg, #070707 0%, #121212 100%);
+    overflow: hidden;
+    padding: 2.5rem 1.5rem 3rem;
+    position: relative;
+  }
+
+  .newsletter-shell {
+    margin: 0 auto;
+    max-width: 88rem;
+  }
+
+  .newsletter-stage {
+    overflow: hidden;
+    padding: 1.2rem 0 0.9rem;
+    position: relative;
+  }
+
+  .newsletter-kicker {
+    color: #f6b500;
+    font-family: 'BullText-Bold', monospace, sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    margin: 0 0 1rem;
+    position: relative;
+    text-transform: uppercase;
+    z-index: 2;
+  }
+
+  .newsletter-display {
+    color: rgba(246, 181, 0, 0.1);
+    display: block;
+    font-family: 'BullText-Bold', monospace, sans-serif;
+    font-size: clamp(4.3rem, 15vw, 10.5rem);
+    left: -0.1rem;
+    line-height: 0.86;
+    pointer-events: none;
+    position: absolute;
+    top: 0.15rem;
+    user-select: none;
+    z-index: 0;
+  }
+
+  .newsletter-form,
+  .newsletter-success {
+    margin: 0 auto;
+    max-width: 60rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .newsletter-line {
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.72);
+    display: flex;
+    gap: 1rem;
+    min-height: 3.2rem;
+  }
+
+  .newsletter-line input {
+    background: transparent;
+    border: none;
+    color: #f6b500;
+    flex: 1 1 auto;
+    font-size: 1rem;
+    min-width: 0;
+    outline: none;
+    padding: 0.45rem 0;
+  }
+
+  .newsletter-line input::placeholder {
+    color: rgba(255, 255, 255, 0.72);
+  }
+
+  .newsletter-submit {
+    align-items: center;
+    background: transparent;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    display: inline-flex;
+    flex: 0 0 auto;
+    font-family: 'BullText-Bold', monospace, sans-serif;
+    font-size: 0.95rem;
+    gap: 0.55rem;
+    padding: 0;
+    transition: opacity 0.25s ease, transform 0.25s ease, color 0.25s ease;
+  }
+
+  .newsletter-submit:hover {
+    color: #ffd452;
+    opacity: 1;
+    transform: translateX(2px);
+  }
+
+  .newsletter-submit-icon {
+    border: 1.5px solid currentColor;
+    border-radius: 2px;
+    display: inline-block;
+    height: 0.9rem;
+    position: relative;
+    width: 1rem;
+  }
+
+  .newsletter-submit-icon::before,
+  .newsletter-submit-icon::after {
+    border-top: 1.5px solid currentColor;
+    content: "";
+    left: 0.08rem;
+    position: absolute;
+    top: 0.2rem;
+    width: 0.62rem;
+  }
+
+  .newsletter-submit-icon::before {
+    transform: rotate(37deg);
+    transform-origin: left top;
+  }
+
+  .newsletter-submit-icon::after {
+    left: 0.26rem;
+    transform: rotate(-37deg);
+    transform-origin: right top;
+  }
+
+  .newsletter-consent {
+    align-items: center;
+    color: rgba(255, 255, 255, 0.74);
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 1rem;
+  }
+
+  .newsletter-consent input {
+    accent-color: #f6b500;
+    background: transparent;
+    border-radius: 4px;
+    height: 1rem;
+    margin: 0;
+    width: 1rem;
+  }
+
+  .newsletter-consent span {
+    font-size: 0.96rem;
+    line-height: 1.4;
+  }
+
+  .newsletter-consent a {
+    color: #f6b500;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
+  }
+
+  .newsletter-success {
+    padding-top: 0.35rem;
+  }
+
+  .newsletter-success-kicker {
+    color: #f6b500;
+    font-family: 'BullText-Bold', monospace, sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    margin: 0 0 0.7rem;
+    text-transform: uppercase;
+  }
+
+  .newsletter-success-message {
+    color: #fff;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin: 0;
+    max-width: 44rem;
+  }
+
+  .newsletter-reset {
+    background: transparent;
+    border: 1px solid rgba(246, 181, 0, 0.35);
+    border-radius: 999px;
+    color: #f6b500;
+    cursor: pointer;
+    font-family: 'BullText-Bold', monospace, sans-serif;
+    margin-top: 1rem;
+    min-height: 2.6rem;
+    padding: 0.65rem 1rem;
+    transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+  }
+
+  .newsletter-reset:hover {
+    background: rgba(246, 181, 0, 0.08);
+    border-color: rgba(246, 181, 0, 0.7);
+    color: #ffd452;
+  }
+
+  .newsletter-visually-hidden {
+    border: 0;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
+
+  @media (max-width: 767px) {
+    .newsletter-section {
+      padding: 2rem 1.25rem 2.7rem;
+    }
+
+    .newsletter-stage {
+      padding: 0.9rem 0 0.6rem;
+    }
+
+    .newsletter-line {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 0.4rem;
+      padding-bottom: 0.7rem;
+    }
+
+    .newsletter-submit {
+      padding-bottom: 0.1rem;
+    }
+
+    .newsletter-consent {
+      align-items: flex-start;
+    }
+  }
+</style>
+
+<script>
+  function initNewsletterForm() {
+    const form = document.querySelector<HTMLFormElement>('[data-newsletter-form]');
+    const success = document.querySelector<HTMLElement>('[data-newsletter-success]');
+    const message = document.querySelector<HTMLElement>('[data-newsletter-message]');
+    const reset = document.querySelector<HTMLButtonElement>('[data-newsletter-reset]');
+
+    if (!form || !success || !message || !reset) return;
+    if (form.dataset.initialized === 'true') return;
+    form.dataset.initialized = 'true';
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const data = new FormData(form);
+      const email = String(data.get('email') ?? '');
+
+      window.setTimeout(() => {
+        message.textContent = `${email} ya quedó en la lista para recibir promociones, horarios especiales y noticias del club antes que la mayoría.`;
+        form.hidden = true;
+        success.hidden = false;
+        form.reset();
+      }, 450);
+    });
+
+    reset.addEventListener('click', () => {
+      success.hidden = true;
+      form.hidden = false;
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initNewsletterForm);
+  } else {
+    initNewsletterForm();
+  }
+  document.addEventListener('astro:page-load', initNewsletterForm);
+</script>

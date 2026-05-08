@@ -15,6 +15,11 @@ const { title = 'Active 24' } = Astro.props;
 </html>
 
 <style is:global>
+  :root {
+    --section-title-size: clamp(1.5rem, 3.2vw, 2.75rem);
+    --section-title-line-height: 0.98;
+  }
+
   /* Declaración de la fuente */
   @font-face {
     font-family: 'BullText-Regular';
