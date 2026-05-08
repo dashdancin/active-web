@@ -34,8 +34,8 @@ const {
     { label: "Preguntas frecuentes", href: "#faq" },
     { label: "Bolsa de empleo", href: "#empleo" },
     { label: "Código de conducta", href: "#codigo" },
-    { label: "Calendario de clases", href: "#privacidad" },
-    { label: "Descarga la aplicación", href: "#daypass" }
+    { label: "Calendario de clases", href: "/horarios" },
+    { label: "Descarga la aplicación", href: "/#daypass" }
   ]
 } = Astro.props;
 
@@ -137,7 +137,7 @@ const currentYear = new Date().getFullYear();
             ¿Listo para empezar?
           </p>
           <a 
-            href="#daypass"
+            href="/#daypass"
             class="nav-link text-gray-300 hover:text-yellow-active transition-colors duration-200 text-base flex items-center group"
           >
             <i class="fas fa-chevron-right mr-2 text-yellow-active text-xs opacity-0 group-hover:opacity-100 transition-opacity"></i>
