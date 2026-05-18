@@ -305,11 +305,8 @@ const DURATION = 6000;
 <script is:inline>
   (function() {
     function initHeroSlider() {
-      console.log('🚀 Inicializando HeroSlider');
-      
       const container = document.querySelector('.hero-slider-section');
       if (!container) {
-        console.error('❌ No se encontró el contenedor del slider');
         return;
       }
 
@@ -321,16 +318,12 @@ const DURATION = 6000;
       const slides = container.querySelectorAll('[data-slide-index]');
       const dots = container.querySelectorAll('[data-dot-index]');
       const fills = container.querySelectorAll('[data-fill-index]');
-      
-      console.log('📊 Elementos encontrados:', { slides: slides.length, dots: dots.length, fills: fills.length });
 
       const DURATION = 6000;
       let currentIndex = 0;
       let autoSlideInterval;
 
       function animateFill(index) {
-        console.log('🎨 Animando fill:', index);
-        
         // Resetear todos los fills
         fills.forEach((fill) => {
           fill.classList.remove('fill-animating');
@@ -368,13 +361,10 @@ const DURATION = 6000;
         // Pequeño delay para asegurar que el navegador procese el reset
         setTimeout(() => {
           fills[index].classList.add('fill-animating');
-          console.log('✅ Clase aplicada al fill', index);
         }, 50);
       }
 
       function showSlide(index) {
-        console.log('📸 Cambiando a slide:', index);
-        
         // Ocultar todos
         slides.forEach((slide) => {
           slide.classList.remove('opacity-100');
@@ -398,15 +388,12 @@ const DURATION = 6000;
           const nextIndex = (currentIndex + 1) % slides.length;
           showSlide(nextIndex);
         }, DURATION);
-        
-        console.log('⏰ Auto-slide activado');
       }
 
       // Click en dots
       dots.forEach((dot) => {
         dot.addEventListener('click', () => {
           const index = parseInt(dot.getAttribute('data-dot-index') || '0');
-          console.log('👆 Click en dot:', index);
           if (autoSlideInterval) {
             clearInterval(autoSlideInterval);
           }
@@ -416,7 +403,6 @@ const DURATION = 6000;
       });
 
       // Inicializar
-      console.log('🎬 Iniciando slider en slide 0');
       animateFill(0);
       startAutoSlide();
 

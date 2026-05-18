@@ -1,43 +1,35 @@
-# Astro Starter Kit: Minimal
+# Active 24 Web
+Sitio web promocional de Active 24 construido con Astro + Tailwind CSS.
 
-```sh
-npm create astro@latest -- --template minimal
-```
+## Stack técnico
+- Astro 5
+- Tailwind CSS 4 (`@tailwindcss/vite`)
+- TypeScript (configuración strict de Astro)
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
-
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
+## Estructura principal
 ```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+src/
+  components/   # Bloques reutilizables de UI (hero, footer, formulario, horarios, etc.)
+  data/         # Datos tipados para vistas (ej. clases)
+  layouts/      # Layout base global
+  pages/        # Rutas públicas (/, /horarios)
+  styles/       # Estilos globales
+public/
+  media/        # Imágenes y video estáticos
+  fonts/        # Tipografías de marca
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Comandos
+- `npm install`: instala dependencias
+- `npm run dev`: levanta entorno local
+- `npm run build`: compila a `dist/`
+- `npm run preview`: vista previa del build
+- `npm run astro -- check`: validación de tipos y diagnósticos Astro
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## Notas de implementación
+- El formulario de registro/pase gratuito funciona actualmente en modo demo (frontend), sin persistencia en backend.
+- El ícono set de Font Awesome se carga de forma global desde `src/layouts/BaseLayout.astro`.
 
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+## Recomendaciones pendientes
+- Conectar formulario a un endpoint real (CRM/API) con validación de servidor.
+- Añadir pruebas automáticas (componentes o e2e) para flujos críticos.
