@@ -1,0 +1,169 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import Footer from "../components/Footer.astro";
+
+const faqs = [
+  {
+    question: "¿Qué incluye la membresía de Active 24?",
+    answer:
+      "Incluye acceso al gimnasio, áreas de cardio y peso libre, zonas funcionales y acompañamiento del equipo de piso durante tu entrenamiento."
+  },
+  {
+    question: "¿Puedo entrenar en cualquier horario?",
+    answer:
+      "Sí. Tenemos operación extendida y en varios días servicio 24 horas para que entrenes cuando mejor te funcione."
+  },
+  {
+    question: "¿Necesito cita para conocer una sucursal?",
+    answer:
+      "No es obligatorio. Puedes acudir directamente, aunque también puedes registrarte en línea para agilizar tu acceso en recepción."
+  },
+  {
+    question: "¿Cómo funciona el pase de prueba?",
+    answer:
+      "Registras tus datos, recibes un código de acceso y lo presentas en sucursal para vivir una sesión real antes de inscribirte."
+  },
+  {
+    question: "¿Dónde realizo el pago de mi inscripción?",
+    answer:
+      "La inscripción y el pago se completan directamente en recepción de la sucursal que elijas."
+  },
+  {
+    question: "¿Puedo cambiar de sucursal después?",
+    answer:
+      "Sí, en la mayoría de casos puedes ajustar tu sucursal de entrenamiento. Te recomendamos revisarlo en recepción para validar condiciones vigentes."
+  }
+];
+---
+
+<BaseLayout title="Preguntas Frecuentes | Active 24">
+  <PageHeader
+    eyebrow="Centro de ayuda"
+    title="Preguntas frecuentes"
+    subtitle="Resuelve dudas sobre horarios, membresías, acceso y proceso de inscripción en Active 24."
+    navItems={[
+      { label: "Conócenos", href: "/#conocenos" },
+      { label: "Sucursales", href: "/#sucursales" },
+      { label: "Horarios", href: "/horarios" },
+      { label: "FAQ", href: "/preguntas-frecuentes", isActive: true },
+      { label: "Inscribirme", href: "/#inscribirme" }
+    ]}
+  />
+
+  <section class="faq-section">
+    <div class="faq-shell">
+      <div class="faq-intro">
+        <p class="faq-eyebrow">Soporte Active 24</p>
+        <h2>Todo lo que necesitas saber antes de empezar</h2>
+        <p>
+          Si tienes una duda específica que no aparezca aquí, acércate a recepción o usa el formulario de inscripción para que nuestro equipo te contacte.
+        </p>
+      </div>
+
+      <div class="faq-list">
+        {faqs.map((item) => (
+          <details class="faq-item">
+            <summary>{item.question}</summary>
+            <p>{item.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .faq-section {
+    background:
+      radial-gradient(circle at top right, rgba(246, 181, 0, 0.09), transparent 32%),
+      linear-gradient(180deg, #f7f6f2 0%, #efeee9 100%);
+    color: #171717;
+    padding: 3rem 1.2rem 4rem;
+  }
+
+  .faq-shell {
+    margin: 0 auto;
+    max-width: 68rem;
+  }
+
+  .faq-intro {
+    margin: 0 auto 1.5rem;
+    max-width: 42rem;
+    text-align: center;
+  }
+
+  .faq-eyebrow {
+    color: #9d7700;
+    font-family: 'BullText-Bold', monospace, sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.2em;
+    margin: 0 0 0.8rem;
+    text-transform: uppercase;
+  }
+
+  .faq-intro h2 {
+    color: #111111;
+    font-size: var(--section-title-size);
+    line-height: var(--section-title-line-height);
+    margin: 0;
+    text-transform: uppercase;
+  }
+
+  .faq-intro p {
+    color: #555555;
+    line-height: 1.62;
+    margin: 1rem auto 0;
+    max-width: 36rem;
+  }
+
+  .faq-list {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .faq-item {
+    background: rgba(255, 255, 255, 0.86);
+    border: 1px solid rgba(17, 17, 17, 0.09);
+    border-radius: 1rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+  }
+
+  .faq-item summary {
+    cursor: pointer;
+    font-family: 'BullText-Bold', monospace, sans-serif;
+    list-style: none;
+    padding: 1.05rem 3rem 1.05rem 1rem;
+    position: relative;
+  }
+
+  .faq-item summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-item summary::after {
+    content: "+";
+    color: #8d6a00;
+    font-size: 1.3rem;
+    line-height: 1;
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: transform 0.2s ease;
+  }
+
+  .faq-item[open] summary::after {
+    transform: translateY(-50%) rotate(45deg);
+  }
+
+  .faq-item p {
+    color: #525252;
+    line-height: 1.62;
+    margin: 0;
+    padding: 0 1rem 1rem;
+  }
+</style>
