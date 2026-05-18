@@ -1,0 +1,476 @@
+---
+interface Review {
+  id: number;
+  name: string;
+  rating: number;
+  text: string;
+  source: "Instagram" | "Google Maps";
+}
+
+const starRow = "★★★★★";
+
+const {
+  reviews = [
+    {
+      id: 1,
+      name: "Carlos M.",
+      rating: 5,
+      source: "Google Maps",
+      text: "Las instalaciones de Active son de primera. Tienen suficientes racks para sentadillas y bancas libres, así que rara vez tienes que esperar, incluso en hora pico. El equipo siempre está en excelente estado."
+    },
+    {
+      id: 2,
+      name: "Mariana L.",
+      rating: 5,
+      source: "Instagram",
+      text: "Me encanta lo limpio que mantienen todo. Los vestidores y las regaderas siempre huelen bien y el personal de limpieza está constantemente trabajando. Es el gimnasio más pulcro en el que he estado."
+    },
+    {
+      id: 3,
+      name: "Jorge H.",
+      rating: 4,
+      source: "Google Maps",
+      text: "Muy buen ambiente. La gente va a lo que va: a entrenar. No hay ese ambiente pesado o pretencioso de otros gimnasios comerciales. Los instructores de piso son amables y siempre dispuestos a corregir tu técnica si se los pides."
+    },
+    {
+      id: 4,
+      name: "Valeria G.",
+      rating: 5,
+      source: "Instagram",
+      text: "Llevo seis meses en Active y ha sido la mejor decisión. Tienen una zona de peso libre muy amplia y el área de cardio tiene máquinas modernas. Además, la ventilación es excelente, nunca se siente sofocado."
+    },
+    {
+      id: 5,
+      name: "Ricardo T.",
+      rating: 4,
+      source: "Google Maps",
+      text: "El horario es súper flexible, lo cual es ideal para los que salimos tarde del trabajo. Me gusta que la música está a un volumen decente, te motiva pero te permite escuchar tus propios audífonos sin problema."
+    },
+    {
+      id: 6,
+      name: "Sofía R.",
+      rating: 5,
+      source: "Instagram",
+      text: "La relación calidad-precio es inmejorable. Tienes equipo de gimnasio premium, buen espacio, barras olímpicas reales y discos de sobra. Active realmente se enfoca en darte lo que necesitas para un buen entrenamiento."
+    }
+  ]
+} = Astro.props as { reviews?: Review[] };
+
+const totalReviews = reviews.length;
+const averageRating = (reviews.reduce((sum, review) => sum + review.rating, 0) / totalReviews).toFixed(1);
+const googleCount = reviews.filter((review) => review.source === "Google Maps").length;
+const instagramCount = reviews.filter((review) => review.source === "Instagram").length;
+---
+
+<section class="reviews-section" id="reseñas">
+  <div class="reviews-shell">
+    <header class="reviews-header">
+      <p class="reviews-eyebrow">Lo que se dice de Active 24</p>
+      <h2>Reseñas que respaldan la experiencia</h2>
+    </header>
+
+    <div class="reviews-metrics">
+      <article class="reviews-metric-item">
+        <p class="reviews-metric-value">{averageRating}/5</p>
+        <p class="reviews-metric-label">calificación promedio</p>
+        <p class="reviews-metric-stars" aria-hidden="true">{starRow}</p>
+        <p class="reviews-metric-source">Google Maps</p>
+      </article>
+
+      <article class="reviews-metric-item">
+        <p class="reviews-metric-value">{instagramCount}</p>
+        <p class="reviews-metric-label">reseñas estilo Instagram</p>
+        <p class="reviews-metric-stars" aria-hidden="true">{starRow}</p>
+        <p class="reviews-metric-source">Comunidad Active 24</p>
+      </article>
+
+      <article class="reviews-metric-item">
+        <p class="reviews-metric-value">{googleCount + instagramCount}</p>
+        <p class="reviews-metric-label">testimonios destacados</p>
+        <p class="reviews-metric-stars" aria-hidden="true">{starRow}</p>
+        <p class="reviews-metric-source">Selección curada</p>
+      </article>
+    </div>
+
+    <div class="reviews-carousel" data-reviews-carousel>
+      <div class="reviews-carousel-head">
+        <p class="reviews-carousel-kicker">Historias del club</p>
+        <div class="reviews-carousel-controls">
+          <button type="button" class="reviews-control" data-reviews-prev aria-label="Mostrar reseñas anteriores">←</button>
+          <button type="button" class="reviews-control" data-reviews-next aria-label="Mostrar más reseñas">→</button>
+        </div>
+      </div>
+
+      <div class="reviews-track" data-reviews-track>
+        {reviews.map((review, index) => (
+          <article class="review-card" style={`--review-index:${index};`}>
+            <div class="review-card-top">
+              <p class="review-rating" aria-label={`${review.rating} de 5 estrellas`}>
+                {"★".repeat(review.rating)}<span class="review-rating-muted">{"★".repeat(5 - review.rating)}</span>
+              </p>
+              <span class="review-source-tag">{review.source}</span>
+            </div>
+
+            <p class="review-text">{review.text}</p>
+
+            <div class="review-footer">
+              <div>
+                <p class="review-name">{review.name}</p>
+              </div>
+              <span class="review-verified">Verificada</span>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .reviews-section {
+    background:
+      radial-gradient(circle at top center, rgba(246, 181, 0, 0.1), transparent 24%),
+      linear-gradient(180deg, #fbfaf7 0%, #f2efe8 100%);
+    color: #161616;
+    overflow: hidden;
+    padding: 3rem 1.25rem;
+    position: relative;
+  }
+
+  .reviews-shell {
+    margin: 0 auto;
+    max-width: 72rem;
+  }
+
+  .reviews-header {
+    margin: 0 auto 1.15rem;
+    max-width: 38rem;
+    text-align: center;
+  }
+
+  .reviews-eyebrow {
+    color: #7b5f00;
+    font-family: 'BullText-Bold', monospace, sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    margin: 0 0 0.7rem;
+    text-transform: uppercase;
+  }
+
+  .reviews-header h2 {
+    color: #161616;
+    font-size: var(--section-title-size);
+    line-height: var(--section-title-line-height);
+    margin: 0;
+    text-transform: uppercase;
+  }
+
+  .reviews-metrics {
+    align-items: end;
+    border-top: 1px solid rgba(17, 17, 17, 0.09);
+    border-bottom: 1px solid rgba(17, 17, 17, 0.09);
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin: 0 auto 1.25rem;
+    max-width: 58rem;
+    padding: 1rem 0;
+  }
+
+  .reviews-metric-item {
+    position: relative;
+    text-align: center;
+  }
+
+  .reviews-metric-item:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: 0.2rem;
+    right: -0.5rem;
+    width: 1px;
+    height: calc(100% - 0.4rem);
+    background: rgba(17, 17, 17, 0.08);
+  }
+
+  .reviews-metric-value {
+    color: #111111;
+    font-family: 'BullText-Bold', monospace, sans-serif;
+    font-size: clamp(1.45rem, 3.3vw, 2rem);
+    line-height: 1;
+    margin: 0;
+  }
+
+  .reviews-metric-label {
+    color: rgba(22, 22, 22, 0.68);
+    font-size: 0.84rem;
+    margin: 0.4rem 0 0;
+  }
+
+  .reviews-metric-stars {
+    color: #f6b500;
+    font-size: 0.9rem;
+    letter-spacing: 0.16em;
+    margin: 0.55rem 0 0.35rem;
+  }
+
+  .reviews-metric-source {
+    color: #111111;
+    font-family: 'BullText-Bold', monospace, sans-serif;
+    font-size: 0.84rem;
+    margin: 0;
+  }
+
+  .reviews-carousel {
+    margin: 0 auto;
+    max-width: 100%;
+  }
+
+  .reviews-carousel-head {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.85rem;
+  }
+
+  .reviews-carousel-kicker {
+    color: rgba(22, 22, 22, 0.64);
+    font-size: 0.84rem;
+    letter-spacing: 0.14em;
+    margin: 0;
+    text-transform: uppercase;
+  }
+
+  .reviews-carousel-controls {
+    display: flex;
+    gap: 0.45rem;
+  }
+
+  .reviews-control {
+    align-items: center;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(17, 17, 17, 0.08);
+    border-radius: 999px;
+    color: #111111;
+    cursor: pointer;
+    display: inline-flex;
+    font-size: 1rem;
+    height: 2.35rem;
+    justify-content: center;
+    transition: background-color 0.25s ease, color 0.25s ease, opacity 0.25s ease;
+    width: 2.35rem;
+  }
+
+  .reviews-control:hover {
+    background: #111111;
+    color: #f6b500;
+  }
+
+  .reviews-control:disabled {
+    cursor: default;
+    opacity: 0.35;
+  }
+
+  .reviews-track {
+    display: flex;
+    gap: 0.9rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    padding-bottom: 0.3rem;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .reviews-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .review-card {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(242, 241, 237, 0.98));
+    border: 1px solid rgba(17, 17, 17, 0.08);
+    border-radius: 1.2rem;
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    flex: 0 0 calc((100% - 1.8rem) / 3);
+    min-height: 100%;
+    padding: 1rem;
+    position: relative;
+    scroll-snap-align: start;
+    transform: translateY(18px);
+    opacity: 0;
+    animation: reviewReveal 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation-delay: calc(var(--review-index) * 0.08s);
+  }
+
+  .review-card-top,
+  .review-footer {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .review-rating {
+    color: #f6b500;
+    font-size: 1rem;
+    letter-spacing: 0.18em;
+    margin: 0;
+  }
+
+  .review-rating-muted {
+    color: rgba(246, 181, 0, 0.2);
+  }
+
+  .review-source-tag {
+    border: 1px solid rgba(17, 17, 17, 0.1);
+    border-radius: 999px;
+    color: rgba(22, 22, 22, 0.68);
+    font-size: 0.76rem;
+    padding: 0.32rem 0.6rem;
+    white-space: nowrap;
+  }
+
+  .review-text {
+    color: rgba(22, 22, 22, 0.86);
+    font-size: 0.92rem;
+    line-height: 1.58;
+    margin: 0;
+  }
+
+  .review-name {
+    color: #111111;
+    font-family: 'BullText-Bold', monospace, sans-serif;
+    font-size: 0.94rem;
+    margin: 0;
+  }
+
+  .review-verified {
+    border: 1px solid rgba(246, 181, 0, 0.3);
+    border-radius: 999px;
+    color: #8d6900;
+    font-size: 0.74rem;
+    padding: 0.35rem 0.65rem;
+    white-space: nowrap;
+  }
+
+  @keyframes reviewReveal {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .review-card {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (max-width: 1024px) {
+    .reviews-metrics {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .reviews-metric-item:nth-child(2)::after {
+      display: none;
+    }
+
+    .review-card {
+      flex-basis: calc((100% - 0.9rem) / 2);
+    }
+  }
+
+  @media (max-width: 767px) {
+    .reviews-section {
+      padding: 2.5rem 1rem;
+    }
+
+    .reviews-metrics {
+      grid-template-columns: 1fr;
+      gap: 0.85rem;
+      padding: 0.9rem 0;
+    }
+
+    .review-card {
+      flex-basis: 100%;
+      padding: 0.95rem;
+    }
+
+    .reviews-metric-item::after {
+      display: none;
+    }
+
+    .reviews-carousel-head {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .review-card-top,
+    .review-footer {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .review-verified {
+      align-self: flex-start;
+    }
+  }
+</style>
+
+<script>
+  function initReviewsCarousel() {
+    document.querySelectorAll<HTMLElement>('[data-reviews-carousel]').forEach((carousel) => {
+      if (carousel.dataset.initialized === 'true') return;
+      carousel.dataset.initialized = 'true';
+
+      const track = carousel.querySelector<HTMLElement>('[data-reviews-track]');
+      const prevButton = carousel.querySelector<HTMLButtonElement>('[data-reviews-prev]');
+      const nextButton = carousel.querySelector<HTMLButtonElement>('[data-reviews-next]');
+
+      if (!track || !prevButton || !nextButton) return;
+
+      const getStep = () => {
+        const firstCard = track.querySelector<HTMLElement>('.review-card');
+        if (!firstCard) return track.clientWidth;
+        const gap = Number.parseFloat(window.getComputedStyle(track).gap || '0');
+        return firstCard.getBoundingClientRect().width + gap;
+      };
+
+      const updateControls = () => {
+        const maxScrollLeft = track.scrollWidth - track.clientWidth - 4;
+        prevButton.disabled = track.scrollLeft <= 4;
+        nextButton.disabled = track.scrollLeft >= maxScrollLeft;
+      };
+
+      prevButton.addEventListener('click', () => {
+        track.scrollBy({ left: -getStep(), behavior: 'smooth' });
+      });
+
+      nextButton.addEventListener('click', () => {
+        track.scrollBy({ left: getStep(), behavior: 'smooth' });
+      });
+
+      track.addEventListener('scroll', updateControls, { passive: true });
+      window.addEventListener('resize', updateControls);
+      updateControls();
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initReviewsCarousel);
+  } else {
+    initReviewsCarousel();
+  }
+
+  document.addEventListener('astro:page-load', initReviewsCarousel);
+</script>
