@@ -1,0 +1,417 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Footer from "../components/Footer.astro";
+
+const sections = [
+  {
+    label: "Filosofía",
+    title: "Nuestra cultura",
+    body: "El entrenamiento es un proceso individual, pero el espacio donde lo desarrollamos pertenece a todos. Entendemos que el ambiente en el que trabajamos tiene un impacto directo en la concentración y en los resultados que buscamos. Por ello, construimos una dinámica basada en el respeto por el entorno y por quienes nos rodean, reconociendo que las instalaciones funcionan de manera fluida gracias a la colaboración de cada persona que cruza la puerta."
+  },
+  {
+    label: "Higiene",
+    title: "Cuidado del espacio",
+    body: "La exigencia física trae consigo desgaste y sudor, lo cual es parte natural de la actividad. Sin embargo, la responsabilidad sobre ese esfuerzo incluye dejar el área en condiciones óptimas para la siguiente persona. Limpiar los tapizados y los agarres después de cada uso, así como utilizar una toalla propia, es una práctica básica de higiene y consideración. Un entorno limpio refleja el respeto que tenemos por nosotros mismos y por el tiempo de los demás."
+  },
+  {
+    label: "Equipo",
+    title: "Uso responsable",
+    body: "Las herramientas que utilizamos son compartidas, y tratarlas con cuidado asegura que estén disponibles y en buenas condiciones a largo plazo. Dominar el peso significa controlarlo durante todo el rango de movimiento, evitando dejar caer las barras o azotar las mancuernas. Asimismo, el ciclo de un ejercicio no termina al completar la última repetición, sino al descargar la máquina y devolver cada disco o accesorio a su lugar correspondiente. El orden físico facilita el enfoque mental de toda la comunidad."
+  },
+  {
+    label: "Comunidad",
+    title: "Empatía y apoyo",
+    body: "Todos empezamos nuestra ruta en algún momento y el aprendizaje es continuo. Fomentamos un ambiente donde la falta de experiencia no es un motivo de juicio, sino una oportunidad para ejercer la empatía. Si alguien necesita orientación, la ofrecemos desde el respeto, sin invadir su espacio ni actuar con condescendencia. Alternar el uso de los aparatos durante los tiempos de recuperación es una manera sencilla y efectiva de mantener el flujo de entrenamiento para todos, especialmente en horas de alta afluencia."
+  },
+  {
+    label: "Convivencia",
+    title: "Actitud y respeto",
+    body: "La disposición con la que llegamos marca la dinámica del lugar. Un trato cordial y una actitud abierta contribuyen a un entorno donde las personas se sienten cómodas para trabajar en sus objetivos. Sabemos que el tiempo aquí tiene valor, por lo que evitamos monopolizar los equipos por distracciones externas, como el uso prolongado del teléfono entre series. Mantener la concentración y permitir que otros hagan lo mismo es la base de nuestra convivencia."
+  }
+];
+
+const navItems = [
+  { label: "Conócenos", href: "/#conocenos" },
+  { label: "Sucursales", href: "/#sucursales" },
+  { label: "Horarios", href: "/horarios" },
+  { label: "Código de conducta", href: "/codigo-de-conducta", isActive: true },
+  { label: "Inscribirme", href: "/#inscribirme" }
+];
+---
+
+<BaseLayout title="Código de Conducta | Active 24">
+  <header class="cc-header">
+    <div class="cc-header-inner">
+      <a href="/" class="cc-header-brand" aria-label="Ir al inicio de Active 24">
+        <img src="/media/hero-logo.avif" alt="Active 24" class="cc-header-logo" width="587" height="198" />
+      </a>
+      <nav class="cc-header-nav" aria-label="Navegación principal">
+        {navItems.map((item) => (
+          <a
+            href={item.href}
+            class:list={["cc-header-link", item.isActive && "cc-header-link--active"]}
+            aria-current={item.isActive ? "page" : undefined}
+          >
+            {item.label}
+          </a>
+        ))}
+      </nav>
+      <a href="/#daypass" class="cc-header-cta">Obtener pase</a>
+    </div>
+  </header>
+
+  <section class="cc-page">
+    <div class="cc-page-inner">
+      <div class="cc-intro">
+        <h1 class="cc-intro-title">Cómo entrenamos</h1>
+        <p class="cc-intro-sub">Estos principios no son una lista de restricciones, sino la guía estructural que nos permite mantener un espacio funcional, ordenado y respetuoso. Su cumplimiento diario es lo que sostiene la identidad de Active 24.</p>
+      </div>
+
+      <div class="cc-timeline-wrap">
+        <div class="cc-line" aria-hidden="true"></div>
+        <ol class="cc-list">
+          {sections.map((item, i) => (
+            <li class="cc-entry">
+              <div class="cc-marker" aria-hidden="true">
+              </div>
+              <div class="cc-entry-text">
+                <h2 class="cc-entry-title">{item.title}</h2>
+                <p class="cc-entry-body">{item.body}</p>
+              </div>
+              <div class="cc-entry-label" data-cat={i}>{item.label}</div>
+            </li>
+          ))}
+        </ol>
+
+        <div class="cc-foot">
+          <img src="/media/crunchism--sparkling-clean.jpg" alt="" class="cc-foot-img" loading="lazy" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  :root {
+    --ink: #141413;
+    --ink-soft: #4f4942;
+    --muted: #81796f;
+    --accent: #d97757;
+    --accent-dark: #8e3f2f;
+    --line: #d8d0c3;
+    --bg: #faf9f5;
+  }
+
+  .cc-header {
+    background: #111111;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .cc-header-inner {
+    max-width: 76rem;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem 1.2rem;
+  }
+
+  .cc-header-brand {
+    flex-shrink: 0;
+    display: flex;
+  }
+
+  .cc-header-logo {
+    width: 92px;
+    height: auto;
+  }
+
+  .cc-header-nav {
+    display: none;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .cc-header-link {
+    font-family: Arial, Helvetica, ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.72);
+    text-decoration: none;
+    padding: 0.4rem 0.75rem;
+    border-radius: 9999px;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .cc-header-link:hover {
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+  }
+
+  .cc-header-link--active {
+    background: #f6b500;
+    color: #111;
+  }
+
+  .cc-header-link--active:hover {
+    background: #f6b500;
+    color: #111;
+  }
+
+  .cc-header-cta {
+    font-family: Arial, Helvetica, ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #111;
+    background: #f6b500;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+  }
+
+  .cc-header-cta:hover {
+    opacity: 0.85;
+  }
+
+  .cc-page {
+    background: var(--bg);
+  }
+
+  .cc-page-inner {
+    max-width: 76rem;
+    margin: 0 auto;
+    padding: 2.5rem 1.2rem 3rem;
+  }
+
+  .cc-intro {
+    margin-bottom: 2rem;
+  }
+
+  .cc-intro-title {
+    font-family: Georgia, "Times New Roman", ui-serif, serif;
+    font-weight: 500;
+    font-size: clamp(2.2rem, 4.8vw, 3.6rem);
+    line-height: 0.95;
+    color: var(--ink);
+    margin: 0 0 1rem;
+    text-wrap: balance;
+  }
+
+  .cc-intro-sub {
+    font-family: Arial, Helvetica, ui-sans-serif, system-ui, sans-serif;
+    color: var(--ink-soft);
+    font-size: 1rem;
+    line-height: 1.62;
+    max-width: 42rem;
+    margin: 0;
+  }
+
+  .cc-timeline-wrap {
+    position: relative;
+  }
+
+  .cc-line {
+    position: absolute;
+    left: 1.65rem;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--line);
+  }
+
+  .cc-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .cc-entry {
+    position: relative;
+    padding: 0 0 3rem 3.25rem;
+  }
+
+  .cc-entry:last-child {
+    padding-bottom: 0;
+  }
+
+  .cc-marker {
+    position: absolute;
+    left: 1.05rem;
+    top: 0.4rem;
+    width: 1.2rem;
+    height: 1.2rem;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    background: var(--bg);
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+  }
+
+  .cc-marker-inner {
+    font-family: Arial, Helvetica, ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.55rem;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .cc-entry-text {
+    font-family: Arial, Helvetica, ui-sans-serif, system-ui, sans-serif;
+  }
+
+  .cc-entry-label {
+    font-family: Georgia, "Times New Roman", ui-serif, serif;
+    font-size: clamp(1.6rem, 3.2vw, 2.4rem);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: 0;
+    display: none;
+  }
+
+  .cc-entry-label[data-cat="0"] {
+    color: #d97757;
+  }
+  .cc-entry-label[data-cat="1"] {
+    color: #7a5636;
+  }
+  .cc-entry-label[data-cat="2"] {
+    color: #506047;
+  }
+  .cc-entry-label[data-cat="3"] {
+    color: #7c4636;
+  }
+  .cc-entry-label[data-cat="4"] {
+    color: #665744;
+  }
+
+
+
+  .cc-entry-title {
+    font-family: Georgia, "Times New Roman", ui-serif, serif;
+    font-weight: 500;
+    font-size: 1.7rem;
+    line-height: 1.14;
+    color: var(--ink);
+    margin: 0.5rem 0 0.75rem;
+    text-wrap: balance;
+  }
+
+  .cc-entry-body {
+    font-family: Arial, Helvetica, ui-sans-serif, system-ui, sans-serif;
+    font-size: 1rem;
+    line-height: 1.75;
+    color: var(--ink-soft);
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .cc-foot {
+    margin: 3rem auto 0;
+    max-width: 28rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cc-foot-img {
+    width: 100%;
+    height: auto;
+    border-radius: 3px;
+    border: 2px solid var(--line);
+    display: block;
+    background: var(--bg);
+    position: relative;
+    z-index: 1;
+  }
+
+  @media (min-width: 768px) {
+    .cc-header-inner {
+      padding: 0.6rem 2rem;
+    }
+
+    .cc-header-nav {
+      display: flex;
+    }
+
+    .cc-header-logo {
+      width: 108px;
+    }
+
+    .cc-page-inner {
+      padding: 3rem 2rem 4rem;
+    }
+
+    .cc-line {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .cc-entry {
+      padding: 0 0 3.5rem 0;
+      width: 100%;
+      display: flex;
+      align-items: center;
+    }
+
+    .cc-entry:nth-child(odd) {
+      flex-direction: row;
+    }
+
+    .cc-entry:nth-child(even) {
+      flex-direction: row-reverse;
+    }
+
+    .cc-marker {
+      left: calc(50% - 0.6rem);
+      top: 0.4rem;
+    }
+
+    .cc-entry-label {
+      display: block;
+      width: 50%;
+      font-size: clamp(2.4rem, 4vw, 3.6rem);
+    }
+
+    .cc-entry:nth-child(odd) .cc-entry-label {
+      padding-left: 3rem;
+    }
+
+    .cc-entry:nth-child(even) .cc-entry-label {
+      padding-right: 3rem;
+      text-align: right;
+    }
+
+    .cc-entry-text {
+      width: 50%;
+      max-width: none;
+    }
+
+    .cc-entry:nth-child(odd) .cc-entry-text {
+      padding-right: 3rem;
+      text-align: right;
+    }
+
+    .cc-entry:nth-child(even) .cc-entry-text {
+      padding-left: 3rem;
+    }
+
+    .cc-foot {
+      margin-top: 3.5rem;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .cc-entry-title {
+      font-size: 1.4rem;
+    }
+  }
+</style>
